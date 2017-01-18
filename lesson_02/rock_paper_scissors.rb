@@ -1,7 +1,23 @@
-VALID_CHOICES = %w(rock paper scissors)
+VALID_CHOICES = %w(rock paper scissors).freeze
 
 def prompt(message)
   puts "=> #{message}"
+end
+
+def win?(first, second)
+  ((first == 'rock') && (second == 'scissors')) ||
+    ((first == 'paper') && (second == 'rock')) ||
+    ((first == 'scissors') && (second == 'paper'))
+end
+
+def display_result(player, computer)
+  if win?(player, computer)
+    prompt 'You won!'
+  elsif win?(computer, player)
+    prompt 'Computer won!'
+  else
+    prompt "It's a draw!"
+  end
 end
 
 loop do
@@ -15,24 +31,15 @@ loop do
       prompt('That is not a valid choic.')
     end
   end
-  
+
   computer_choice = VALID_CHOICES.sample
-  
+
   prompt "You chose: #{choice}; computer chose: #{computer_choice}"
-  
-  if ((choice == 'rock') && (computer_choice == 'scissors')) ||
-      ((choice == 'paper') && (computer_choice == 'rock')) ||
-      ((choice == 'scissors') && (computer_choice == 'paper'))
-    prompt 'You won!'
-  elsif choice == computer_choice
-    prompt "It's a draw!"
-  else
-    prompt 'Computer won!'
-  end
-  
+  display_result(choice, computer_choice)
+
   prompt 'Do you want to play again?'
   play_again = gets.chomp
   break unless play_again.downcase.start_with?('y')
 end
 
-prompt 'Than you for playing. Good Bye!'
+prompt 'Thank you for playing. Good Bye!'
