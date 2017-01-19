@@ -20,7 +20,7 @@ def verify_loan_amount(amount)
 end
 
 def verify_apr(rate)
-  if (rate.to_f > 0) && (rate_to_f < 100)
+  if (rate.to_f > 0) && (rate.to_f < 100)
     true
   else
     false
@@ -87,7 +87,7 @@ loop do # Get duration in years
 end
 
 # Calculating monthly interest
-monthly_interest = apr.to_f / 12.0
+monthly_interest = (apr.to_f/100.0) / 12.0
 
 # Calculating duration in months
 duration_in_months = duration_in_years.to_i * 12
@@ -96,3 +96,12 @@ duration_in_months = duration_in_years.to_i * 12
 monthly_payment =
   calculate_monthly_payment(loan_amount.to_i,
                             monthly_interest, duration_in_months)
+                            
+prompt 'The monthly interest rate : '
+prompt "#{monthly_interest*100}%"
+
+prompt 'Duration in months : '
+prompt "#{duration_in_months}"
+
+prompt 'Monthly Payment : '
+prompt "#{monthly_payment}"
