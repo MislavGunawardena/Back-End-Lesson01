@@ -39,7 +39,7 @@ prompt "Hello #{name}!"
 
 loop do
   loan_amount = ''
-  loop do # Get the loan amount
+  loop do
     prompt 'Please enter the loan amount : '
     loan_amount = gets.chomp
     if verify_loan_amount(loan_amount)
@@ -48,9 +48,9 @@ loop do
       prompt 'The loan amount you entered is not valid'
     end
   end
-  
+
   apr = ''
-  loop do # Get the APR
+  loop do
     prompt 'Please enter the Annual Percentage Rate : '
     apr = gets.chomp
     if verify_apr(apr)
@@ -59,9 +59,9 @@ loop do
       prompt 'The Annual Percentage Rate you entered is not valid.'
     end
   end
-  
+
   duration_in_years = ''
-  loop do # Get duration in years
+  loop do
     prompt 'Please enter the duration in years : '
     duration_in_years = gets.chomp
     if verify_duration(duration_in_years)
@@ -70,27 +70,24 @@ loop do
       prompt 'The duration you entered is not valid.'
     end
   end
-  
-  # Calculating monthly interest
-  monthly_interest = (apr.to_f/100.0) / 12.0
-  
-  # Calculating duration in months
+
+  monthly_interest = (apr.to_f / 100.0) / 12.0
+
   duration_in_months = duration_in_years.to_i * 12
-  
-  # Calculating monthly payment
+
   monthly_payment =
     calculate_monthly_payment(loan_amount.to_i,
                               monthly_interest, duration_in_months)
-                              
+
   prompt 'The monthly interest rate : '
-  prompt "#{monthly_interest*100}%"
-  
+  prompt "#{monthly_interest * 100}%"
+
   prompt 'Duration in months : '
-  prompt "#{duration_in_months}"
-  
+  prompt duration_in_months.to_s
+
   prompt 'Monthly Payment : '
-  prompt "#{monthly_payment}"
-  
+  prompt format("%.2f", monthly_payment)
+
   prompt 'Do you wish to make another calculation?(y/n)'
   calculate_again = gets.chomp
   break unless calculate_again.downcase.start_with?('y')
