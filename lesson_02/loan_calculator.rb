@@ -4,35 +4,19 @@ def prompt(message)
 end
 
 def verify_name(name)
-  if !name.empty?
-    true
-  else
-    false
-  end
+  !name.empty?
 end
 
 def verify_loan_amount(amount)
-  if amount.to_i != 0
-    true
-  else
-    false
-  end
+  amount.to_i != 0
 end
 
 def verify_apr(rate)
-  if (rate.to_f > 0) && (rate.to_f < 100)
-    true
-  else
-    false
-  end
+  (rate.to_f > 0) && (rate.to_f < 100)
 end
 
 def verify_duration(duration)
-  if duration.to_i >= 1
-    true
-  else
-    false
-  end
+  duration.to_i >= 1
 end
 
 def calculate_monthly_payment(p, j, n)
