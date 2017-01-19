@@ -7,8 +7,8 @@ def valid_number?(number)
   number.to_i != 0
 end
 
-def operation_to_message(operator)
-  case operator
+def operation_to_message(op)
+  case op
   when '1'
     'Adding'
   when '2'
@@ -23,7 +23,7 @@ end
 prompt 'Welcome to the calculator! Enter your name: '
 name = ''
 loop do
-  name = gets.chom
+  name = gets.chomp
   
   if name.empty?
     prompt 'Make sure to use a valid name'
@@ -43,7 +43,7 @@ loop do #main loop
     if valid_number?(number1)
       break
     else
-      prompt "Hmm... that doesn't look like a valid nimber"
+      prompt "Hmm... that doesn't look like a valid number"
     end
   end
   
@@ -72,7 +72,7 @@ loop do #main loop
   loop do
     operator = gets.chomp
     
-    if %w(1,2,3,4).include?(operator)
+    if %w{1 2 3 4}.include?(operator)
       break
     else
       prompt 'Must enter 1,2,3, or 4'
