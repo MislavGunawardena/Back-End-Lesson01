@@ -8,7 +8,7 @@ def verify_name(name)
 end
 
 def verify_loan_amount(amount)
-  amount.to_i != 0
+  amount.to_i > 0
 end
 
 def verify_apr(rate)
