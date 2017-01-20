@@ -1,4 +1,9 @@
 VALID_CHOICES = %w(rock paper scissors spock lizard)
+WINNING_COMBINATIONS = [%w(rock scissors), %w(rock lizard),
+                        %w(paper rock), %w(paper spock),
+                        %w(scissors paper), %w(scissors lizard),
+                        %w(spock rock), %w(spock scissors),
+                        %w(lizard paper), %w(lizard spock)]
 
 def prompt(message)
   puts "=> #{message}"
@@ -6,12 +11,8 @@ end
 
 def win?(first, second)
   chosen_combination = [first, second]
-  winning_combinations = [%w(rock scissors), %w(rock lizard),
-                          %w(paper rock), %w(paper spock),
-                          %w(scissors paper), %w(scissors lizard),
-                          %w(spock rock), %w(spock scissors),
-                          %w(lizard paper), %w(lizard spock)]
-  winning_combinations.include?(chosen_combination)
+
+  WINNING_COMBINATIONS.include?(chosen_combination)
 end
 
 def display_result(player, computer)
@@ -32,6 +33,13 @@ def display_scorboard(user_score, computer_score)
   prompt '----------'
 end
 
+def normalize_choice(choice)
+  %w(r p sc sp l).each_with_index do |abbrivated, index|
+    choice = VALID_CHOICES[index] if choice == abbrivated
+  end
+  choice
+end
+
 loop do
   user_score = 0
   computer_score = 0
@@ -41,9 +49,7 @@ loop do
     loop do
       prompt "Choose one: #{VALID_CHOICES.join(', ')} : "
       user_choice = gets.chomp
-      %w(r p sc sp l).each_with_index do |abbrivated, index|
-        user_choice = VALID_CHOICES[index] if user_choice == abbrivated
-      end
+      user_choice = normalize_choice(user_choice)
       if VALID_CHOICES.include?(user_choice)
         break
       else
@@ -62,7 +68,7 @@ loop do
     display_scorboard(user_score, computer_score)
 
     if user_score == 5
-      prompt 'Congradulations! You won the tournament!'
+      prompt 'Congratulations! You won the tournament!'
       break
     elsif computer_score == 5
       prompt 'The computer won the tournament. Better luck next time!'
@@ -73,14 +79,14 @@ loop do
   play_again = ''
   loop do
     prompt 'Want to play another tournament?(y/n)'
-    play_again = gets.chomp
-    if %w(y n yes no).include?(play_again.downcase)
+    play_again = gets.chomp.downcase
+    if %w(y n yes no).include?(play_again)
       break
     else
       prompt "Please enter either 'y' or 'n'"
     end
   end
-  break if %w(n no).include?(play_again.downcase)
+  break if %w(n no).include?(play_again)
 end
 
 prompt 'Thank you for playing. Good Bye!'
