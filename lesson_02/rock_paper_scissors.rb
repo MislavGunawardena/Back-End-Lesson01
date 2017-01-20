@@ -70,13 +70,13 @@ loop do
   loop do
     prompt 'Want to play another tournament?(y/n)'
     play_again = gets.chomp
-    if %w(y n yes no).include?(play_again)
+    if %w(y n yes no).include?(play_again.downcase)
       break
     else
       prompt "Please enter either 'y' or 'n'"
     end
   end
-  break if %w(n no).include?(play_again)
+  break if %w(n no).include?(play_again.downcase)
 end
 
 prompt 'Thank you for playing. Good Bye!'
