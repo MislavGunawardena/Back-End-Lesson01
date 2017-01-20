@@ -51,9 +51,11 @@ loop do
 
     user_wins += 1 if win?(choice, computer_choice)
     computer_wins += 1 if win?(computer_choice, choice)
+    prompt '----------'
     prompt "Score:"
     prompt "You: #{user_wins}"
     prompt "Computer: #{computer_wins}"
+    prompt '----------'
 
     if user_wins == 5
       prompt 'Congradulations! You won the tournament!'
@@ -71,7 +73,7 @@ loop do
     if %w(y n yes no).include?(play_again)
       break
     else
-      puts "Please enter either 'y' or 'n'"
+      prompt "Please enter either 'y' or 'n'"
     end
   end
   break if %w(n no).include?(play_again)
