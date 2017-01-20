@@ -29,28 +29,28 @@ loop do
   computer_wins = 0
 
   loop do
-    choice = ''
+    user_choice = ''
     loop do
       prompt "Choose one: #{VALID_CHOICES.join(', ')} : "
-      choice = gets.chomp
-      %w(r p sc sp l).each_with_index do |short_choice, index|
-        choice = VALID_CHOICES[index] if choice == short_choice
+      user_choice = gets.chomp
+      %w(r p sc sp l).each_with_index do |abbrivated, index|
+        user_choice = VALID_CHOICES[index] if user_choice == abbrivated
       end
-      if VALID_CHOICES.include?(choice)
+      if VALID_CHOICES.include?(user_choice)
         break
       else
         prompt 'That is not a valid choice!'
-        prompt "Enter 'sc' for scissors or 'sp' for spock" if choice == 's'
+        prompt "Enter 'sc' for scissors or 'sp' for spock" if user_choice == 's'
       end
     end
 
     computer_choice = VALID_CHOICES.sample
 
-    prompt "You chose: #{choice}; computer chose: #{computer_choice}"
-    display_result(choice, computer_choice)
+    prompt "You chose: #{user_choice}; computer chose: #{computer_choice}"
+    display_result(user_choice, computer_choice)
 
-    user_wins += 1 if win?(choice, computer_choice)
-    computer_wins += 1 if win?(computer_choice, choice)
+    user_wins += 1 if win?(user_choice, computer_choice)
+    computer_wins += 1 if win?(computer_choice, user_choice)
     prompt '----------'
     prompt "Score:"
     prompt "You: #{user_wins}"
