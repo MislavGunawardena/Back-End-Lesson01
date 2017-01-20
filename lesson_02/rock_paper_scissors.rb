@@ -25,8 +25,8 @@ def display_result(player, computer)
 end
 
 loop do
-  user_wins = 0
-  computer_wins = 0
+  user_score = 0
+  computer_score = 0
 
   loop do
     user_choice = ''
@@ -49,18 +49,18 @@ loop do
     prompt "You chose: #{user_choice}; computer chose: #{computer_choice}"
     display_result(user_choice, computer_choice)
 
-    user_wins += 1 if win?(user_choice, computer_choice)
-    computer_wins += 1 if win?(computer_choice, user_choice)
+    user_score += 1 if win?(user_choice, computer_choice)
+    computer_score += 1 if win?(computer_choice, user_choice)
     prompt '----------'
     prompt "Score:"
-    prompt "You: #{user_wins}"
-    prompt "Computer: #{computer_wins}"
+    prompt "You: #{user_score}"
+    prompt "Computer: #{computer_score}"
     prompt '----------'
 
-    if user_wins == 5
+    if user_score == 5
       prompt 'Congradulations! You won the tournament!'
       break
-    elsif computer_wins == 5
+    elsif computer_score == 5
       prompt 'The computer won the tournament. Better luck next time!'
       break
     end
