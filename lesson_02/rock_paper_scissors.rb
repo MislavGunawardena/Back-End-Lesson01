@@ -24,6 +24,14 @@ def display_result(player, computer)
   end
 end
 
+def display_scorboard(user_score, computer_score)
+  prompt '----------'
+  prompt "Score:"
+  prompt "You: #{user_score}"
+  prompt "Computer: #{computer_score}"
+  prompt '----------'
+end
+
 loop do
   user_score = 0
   computer_score = 0
@@ -51,11 +59,7 @@ loop do
 
     user_score += 1 if win?(user_choice, computer_choice)
     computer_score += 1 if win?(computer_choice, user_choice)
-    prompt '----------'
-    prompt "Score:"
-    prompt "You: #{user_score}"
-    prompt "Computer: #{computer_score}"
-    prompt '----------'
+    display_scorboard(user_score, computer_score)
 
     if user_score == 5
       prompt 'Congradulations! You won the tournament!'
