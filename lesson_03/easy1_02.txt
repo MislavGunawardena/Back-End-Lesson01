@@ -1,0 +1,29 @@
+
+1) != is the "not equal to" operator. It tests whether an argument is equal to the object that calls it.
+   If they are equal, then the method returns false. Otherwise, the method returns true.
+   It can be used as a branching condition and in situations where a boolean value is expected.
+   
+2) The not operator: inverts the truth value of an object. if a is true, then !a is false, and vice versa.
+
+3) By convention, a method name ends with a an exclamation point ! if that method does something that is unexpected.
+   Sometimes it is used to differenciate a method that mutates the caller from a similar method that returns an 
+   object without mutating the caller.
+   
+4) Putting ? in front of a single letter returns a single character string. For example, ?a returns "a" and ?! returns "!".
+   In many other situations, putting a ? directly in front of an object causes a SyntaxError, because method names and 
+   variable names cannot start with ?. The question mark, ?, can appear in front of an object if it is a part of a ternary
+   operator structure.
+   
+5) If ? appears at the end of a method name, by convention the method should return a boolean object. The returned object
+   should be true or false.
+
+6) Putting !! before an object will return true if that object is neither nil nor the false object.
+   Putting !! infront of either nil or the false object returns false.
+   It is equivalent to using the not operato ! twice.
+
+
+   
+   
+   
+
+

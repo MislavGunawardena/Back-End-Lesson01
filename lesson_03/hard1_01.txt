@@ -1,0 +1,3 @@
+Nothing will happen. There will be no output and there will be no error. This is because the ruby compiler takes note of the
+existance of the variable greeting prior to running the program. So even though the second line (greeting = “hello world”) is not
+executed, the variable greeting will return nil.

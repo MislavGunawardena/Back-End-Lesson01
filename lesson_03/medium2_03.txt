@@ -1,0 +1,11 @@
+My string looks like this now: pumpkins
+My array looks like this now: ["pumpkins", "rutabaga"]
+
+Calling tricky_method mutates my_array while it doesn't mutate my_string. This is because the reassignment operator +=
+points the local variable a_string_param to a brand new memory location that contains a new object. While it makes use of
+the object pointed to by my_string, it doesn't alter it.
+On the other hand, the << operator adds an element to the array pointed to by an_array_param. This is the same array that is
+pointed to by my_array.
+
+In short: String#+= method creates a new string object. Array#<< method does not create a new object. It alters the object 
+upon which it is called.

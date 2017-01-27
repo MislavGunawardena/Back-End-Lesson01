@@ -1,0 +1,13 @@
+The object id's of a_outer, b_outer, c_outer, and d_outer will not change when they are initially queried from within
+the method.
+
+When the values of those variables are reassigned within the method, then their object ids will change.
+
+When they are initialized within the method, a_inner, b_inner, c_inner, and d_inner will have the same object ids as these 
+reassigned a_outer, b_outer, c_outer, and d_outer objects.
+
+After leaving the block, a_outer, b_outer, c_outer, and d_outer will all have the same object ids that they had at the 
+point at which they were passed to the method.
+
+a_inner, b_inner, c_inner, and d-inner will all be out of scope once we leave the method. Trying to refer to those
+variables will cause an error. Thus the rescue clauses will be executed.

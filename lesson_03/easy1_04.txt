@@ -1,0 +1,4 @@
+numbers = [1, 2, 3, 4, 5]
+numbers.delete_at(1) will delete the number whose index is 1. numbers will become [1,3,4,5]
+numbers.delete(1) will delete all the numbers of the array that equal 1. numbers will become [2,3,4,5] If 1 had appeared
+more than once within numbers, all instances of 1 would have been removed.

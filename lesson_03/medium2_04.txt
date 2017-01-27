@@ -1,0 +1,3 @@
+
+In this case my_string will be printed as  'pumpkinsrutabaga' and my_array will be printed as ["pumpkins"].
+This is because String#<< mutates the string upon which it is called, while = reassigns a variable to a brand new object.

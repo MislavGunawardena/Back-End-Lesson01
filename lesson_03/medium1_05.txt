@@ -1,0 +1,3 @@
+The limit variable that is defined in the top level is out of scope within the fib class where it is being used. 
+This problem can be solved by including another parameter that represents the limit in the fib method. Then a limit
+can be passed in as an argument when the fib method is being called.

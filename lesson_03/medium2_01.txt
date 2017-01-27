@@ -1,0 +1,17 @@
+
+The object id's of a_outer, b_outer, c_outer, and d_outer will not change when they are initially queried from within
+the .times block. The object_id of d_outer will be the id associated with the integer object 42. Thus it will be the
+same as the object if of a_outer.
+
+When the values of those variables are reassigned within the .times block, then their object ids will change.
+
+When they are initialized within the .times block, a_inner, b_inner, c_inner, and d_inner will have the same object ids as these 
+reassigned a_outer, b_outer, c_outer, and d_outer objects.
+
+After leving the block, a_outer, b_outer, c_outer, and d_outer will all have object ids that they aquired during the
+execution of the block.
+
+a_inner, b_inner, c_inner, and d-inner will all be out of scope once the .times block is left. Trying to refer to those
+variables will cause an error. Thus the rescue clauses will be executed.
+
+
