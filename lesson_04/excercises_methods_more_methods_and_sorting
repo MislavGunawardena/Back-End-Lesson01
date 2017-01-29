@@ -1,0 +1,37 @@
+1) [1, 2, 3]
+
+2) It only counts those array items whose corresponding block return values return true. 
+
+3) [1, 2, 3]
+Because reject returns an array consisting of items for which the corresponding block returns false. puts always returns
+nil. nil is falsy.
+
+4) {"a"=>"ant", "b"=>"bear", "c"=>"cat"}
+The hash keys will be the first letter of each word, as represented by value[0].
+The hash values will be the successive values of the starting array.
+
+5) It removes the first key-value pair from hash. It returns the removed key-value pair.
+
+6) 11
+The pop method returns :'caterpillar'. 11 is returned when .size is called on 'caterpillar'.
+
+7) true
+Both 1 and 3 satisfy the condition in the last line of the block, num.odd?
+The .any? method returns true if the array on which it is called contains at least 1 item that satisfies the condition
+in the last line of it's block.
+
+8) In this example, it returns an array containing the first 2 items of arr: [1,2]
+This method is not destructive. That can be verified by typing these 2 lines on irb and then examining the contents
+of arr.
+
+9) [nil, 'bear']
+The first item of the hash does not satisfy the condition of the if statement in the block. Thus, the if statement returns 
+nil.
+The second item satisfies the condition of the if statement. Thus for the second item, the block returns: value,
+which evaluates to 'bear'.
+
+
+
+
+
+
