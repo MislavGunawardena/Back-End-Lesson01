@@ -1,7 +1,4 @@
 require 'pry'
-
-positions = [[' ',' ',' '],[' ',' ',' '],[' ',' ',' ']]
-
 def display_board(positions)
   puts '  1 2 3 '
   puts '  - - - '
@@ -58,7 +55,7 @@ def computer_turn(positions)
     row == []
   end
     
-  binding.pry
+  #binding.pry
   open_positions.sample.sample.replace('o')
 end
 
@@ -91,9 +88,23 @@ def winner(positions) #returns the winner
     :player
   elsif valid_pattern?('o', positions)
     :computer
+  elsif board_full?(positions)
+    :draw
   else
     nil
   end
+end
+
+def board_full?(positions)
+  open_positions =
+    positions.map do |row|
+      row.select {|cell| cell == ' '}
+    end
+  open_positions.reject! do |row|
+    row == []
+  end
+  
+  (open_positions == []) ? true : false
 end
 
 def display_result(positions)
@@ -101,18 +112,46 @@ def display_result(positions)
     puts 'You won!'
   elsif winner(positions) == :computer
     puts 'The computer won!'
-  else
+  elsif winner(positions) == :draw
     puts "It's a draw!"
+  else
+    nil
   end
 end
 
-5.times do
+puts 'Welcome to the tic-tac-toe game!'
+
+loop do
+  positions = [[' ',' ',' '],[' ',' ',' '],[' ',' ',' ']]
   display_board(positions)
-  player_input(positions)
-  break if winner(positions)
-  computer_turn(positions)
-  break if winner(positions)
+  
+  loop do
+    player_input(positions)
+    display_board(positions)
+    break if winner(positions)
+    
+    puts "Please press enter for the computer to play it's turn."
+    gets
+    computer_turn(positions)
+    display_board(positions)
+    break if winner(positions)
+  end
+  
+  display_result(positions)
+  
+  another_game = ''
+  loop do
+    puts 'Do you want to play again? (y/n)'
+    another_game = gets.chomp.downcase
+    if ['y', 'n', 'yes', 'no'].include?(another_game)
+      break
+    else
+      puts "That was not a valid response. Please enter 'y' or 'n'"
+    end
+  end
+
+  break if ['n', 'no'].include?(another_game)
 end
 
-display_result(positions)
+puts "Thank you for playing tic-tac-toe. Have a good day!"
 
