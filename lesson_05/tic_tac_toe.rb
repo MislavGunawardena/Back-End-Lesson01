@@ -97,7 +97,15 @@ def computer_marks_square(board)
     board.flatten.select do |cell|
       cell == ' '
     end
-  open_cells.sample.replace('o')
+  
+  if squares_for_computer_win(board).include?(' ')
+    squares_for_computer_win(board).sample.replace('o')
+  elsif squares_for_player_win(board).include?(' ')
+    squares_for_player_win(board).sample.replace('o')
+  else
+    open_cells.sample.replace('o')
+  end
+  #open_cells.sample.replace('o')
 end
 
 def set_of_rows(board)
@@ -139,6 +147,23 @@ def winning_sequences(board)
   winning_combinations += set_of_diagonals(board)
   
   winning_combinations
+end
+
+def squares_for_computer_win(board)
+  sequences_for_computer_win =
+    winning_sequences(board).select do |sequence|
+      (sequence.count('o') == 2) && (sequence.count(' ') == 1) 
+    end
+    
+  sequences_for_computer_win.flatten.reject { |cell| cell != ' '}
+end
+
+def squares_for_player_win(board)
+  sequences_for_player_win =
+    winning_sequences(board).select do |sequence|
+      (sequence.count('x')) == 2 && (sequence.count(' ') == 1)
+    end
+  sequences_for_player_win.flatten.reject { |cell| cell != ' '}
 end
 
 def player_won?(board)
@@ -245,7 +270,7 @@ loop do
   board = empty_board
   display_board(board)
   
-  active_competitor = 'player'
+  active_competitor = ''
   set_active_competitor(active_competitor)
   
   loop do
