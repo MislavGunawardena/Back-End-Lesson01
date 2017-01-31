@@ -1,4 +1,3 @@
-require 'pry'
 def display_board(board)
   puts '  1 2 3 '
   puts '  - - - '
@@ -13,8 +12,14 @@ def display_board(board)
 end
 
 def available_rows(board)
-  [1,2,3].select do |number|
-    board[number - 1].any? { |cell| cell == ' ' }
+  [1,2,3].select do |row_no|
+    set_of_rows(board)[row_no - 1].any? { |col_no| col_no == ' ' }
+  end
+end
+
+def available_columns(cell, board)
+  [1,2,3].select do |col_no|
+    board[cell[0] - 1][col_no - 1] == ' '
   end
 end
 
@@ -43,25 +48,25 @@ def player_chooses_row(cell, board)
   cell[0] = row
 end
 
-def player_chooses_column(cell)
+def player_chooses_column(cell, board)
   column = ''
   loop do
-    puts 'Please enter a column number : '
+    puts "Please enter a column number : #{numbers_in_array(available_columns(cell, board))}."
     column = gets.chomp.to_i
     if [1, 2, 3].include?(column)
       break
     else
-      puts "That's not a valid column number. Please enter 1, 2, or 3:"
+      puts "That's not a valid column number. Please enter #{numbers_in_array(available_columns(cell, board))}."
     end
   end
   cell[1] = column
 end
 
-def player_input(board)
+def player_marks_square(board)
   loop do
     marked_cell = ['', '']
     player_chooses_row(marked_cell, board)
-    player_chooses_column(marked_cell)
+    player_chooses_column(marked_cell, board)
 
     if board[marked_cell[0] - 1][marked_cell[1] - 1] == ' '
       board[marked_cell[0] - 1][marked_cell[1] - 1] = 'x'
@@ -74,7 +79,20 @@ def player_input(board)
   end
 end
 
-def computer_turn(board)
+def print_dots_while_waiting
+  2.times do
+    5.times do
+      print '.'
+      sleep(0.3)
+    end
+    print "\r      \r"
+  end
+end
+
+def computer_marks_square(board)
+  puts "The computer is about to make it's move...."
+  print_dots_while_waiting
+  
   open_cells = 
     board.flatten.select do |cell|
       cell == ' '
@@ -162,32 +180,52 @@ def display_result(board)
     puts 'The computer won!'
   elsif result(board) == 'tie'
     puts "It's a tie!"
-  else
-    nil
   end
 end
+
+def empty_board
+  board = []
+  3.times do
+    row = []
+    3.times { row << ' ' }
+    board << row
+  end
+  
+  board
+end
+
+def switch_active_competitor(active_competitor)
+  if active_competitor == 'player'
+    active_competitor.replace('computer')
+  else
+    active_competitor.replace('player')
+  end
+end
+
+def mark_a_square(competitor, board)
+  player_marks_square(board) if competitor == 'player'
+  computer_marks_square(board) if competitor == 'computer'
+end
+
 
 puts 'Welcome to the tic-tac-toe game!'
 
 loop do
-  board = [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']]
+  board = empty_board
   display_board(board)
-
+  
+  active_competitor = 'player'
   loop do
-    player_input(board)
+    mark_a_square(active_competitor, board)
     display_board(board)
     break if game_over?(board)
-
-    puts "Please press enter for the computer to play it's turn."
-    gets
-    computer_turn(board)
-    display_board(board)
-    break if game_over?(board)
+    switch_active_competitor(active_competitor)
   end
 
   display_result(board)
 
   another_game = ''
+  
   loop do
     puts 'Do you want to play again? (y/n)'
     another_game = gets.chomp.downcase
