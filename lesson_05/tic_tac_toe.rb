@@ -207,6 +207,18 @@ def mark_a_square(competitor, board)
   computer_marks_square(board) if competitor == 'computer'
 end
 
+def decide_on_playing_again(play_again)
+  loop do
+    puts 'Do you want to play again? (y/n)'
+    play_again.replace(gets.chomp.downcase)
+    if ['y', 'n', 'yes', 'no'].include?(play_again)
+      break
+    else
+      puts "That was not a valid response. Please enter 'y' or 'n'"
+    end
+  end
+end
+
 
 puts 'Welcome to the tic-tac-toe game!'
 
@@ -224,8 +236,10 @@ loop do
 
   display_result(board)
 
-  another_game = ''
+  play_again = ''
+  decide_on_playing_again(play_again)
   
+=begin
   loop do
     puts 'Do you want to play again? (y/n)'
     another_game = gets.chomp.downcase
@@ -235,8 +249,9 @@ loop do
       puts "That was not a valid response. Please enter 'y' or 'n'"
     end
   end
+=end
 
-  break if ['n', 'no'].include?(another_game)
+  break if ['n', 'no'].include?(play_again)
 end
 
 puts "Thank you for playing tic-tac-toe. Have a good day!"
