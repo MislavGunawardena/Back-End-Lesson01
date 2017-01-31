@@ -190,7 +190,6 @@ def empty_board
     3.times { row << ' ' }
     board << row
   end
-  
   board
 end
 
@@ -199,6 +198,25 @@ def switch_active_competitor(active_competitor)
     active_competitor.replace('computer')
   else
     active_competitor.replace('player')
+  end
+end
+
+def set_active_competitor(competitor)
+  player_first = ''
+  loop do
+    puts "Do you want to go first? (y/n)"
+    player_first = gets.chomp.downcase
+    if ['y', 'n', 'yes', 'no'].include?(player_first)
+      break
+    else
+      puts "That was not a valid response. Please enter 'y' or 'n'"
+    end
+  end
+  
+  if ['yes', 'y'].include?(player_first)
+    competitor.replace('player')
+  else
+    competitor.replace('computer')
   end
 end
 
@@ -211,6 +229,7 @@ def decide_on_playing_again(play_again)
   loop do
     puts 'Do you want to play again? (y/n)'
     play_again.replace(gets.chomp.downcase)
+    
     if ['y', 'n', 'yes', 'no'].include?(play_again)
       break
     else
@@ -227,6 +246,8 @@ loop do
   display_board(board)
   
   active_competitor = 'player'
+  set_active_competitor(active_competitor)
+  
   loop do
     mark_a_square(active_competitor, board)
     display_board(board)
@@ -238,18 +259,6 @@ loop do
 
   play_again = ''
   decide_on_playing_again(play_again)
-  
-=begin
-  loop do
-    puts 'Do you want to play again? (y/n)'
-    another_game = gets.chomp.downcase
-    if ['y', 'n', 'yes', 'no'].include?(another_game)
-      break
-    else
-      puts "That was not a valid response. Please enter 'y' or 'n'"
-    end
-  end
-=end
 
   break if ['n', 'no'].include?(play_again)
 end
