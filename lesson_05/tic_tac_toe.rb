@@ -39,11 +39,10 @@ def player_sets_row(sqr, board)
   row = gets.chomp.to_i
   if available_rows(board).include?(row)
     sqr[0] = row - 1
-    return
+  else
+    puts "That's not a valid row number. "
+    player_sets_row(sqr, board)
   end
-  
-  puts "That's not a valid row number. "
-  player_sets_row(sqr, board)
 end
 
 def player_sets_column(sqr, board)
@@ -51,28 +50,25 @@ def player_sets_column(sqr, board)
   column = gets.chomp.to_i
   if [1, 2, 3].include?(column)
     sqr[1] = column - 1
-    return
+  else
+    puts "That's not a valid column number. Please enter #{numbers_in_array(available_columns(sqr, board))}."
+    player_sets_row(sqr, board)
   end
-  
-  puts "That's not a valid column number. Please enter #{numbers_in_array(available_columns(sqr, board))}."
-  player_sets_row(sqr, board)
 end
 
 def player_marks_square(board)
-  loop do
-    square = [nil, nil]
-    player_sets_row(square, board)
-    player_sets_column(square, board)
-    row_no, col_no = square
+  square = [nil, nil]
+  player_sets_row(square, board)
+  player_sets_column(square, board)
+  row_no, col_no = square
 
-    if board[row_no][col_no] == ' '
-      board[row_no][col_no] = 'X'
-      break
-    else
-      display_board(board)
-      puts "The cell (#{row_no}#{col_no[1]}) " +
-           'has already been marked. Please choose another cell'
-    end
+  if board[row_no][col_no] == ' '
+    board[row_no][col_no] = 'X'
+  else
+    display_board(board)
+    puts "The cell (#{row_no}#{col_no}) " +
+         'has already been marked. Please choose another cell'
+    player_marks_square(board)
   end
 end
 
@@ -80,7 +76,7 @@ def print_dots_while_waiting
   2.times do
     5.times do
       print '.'
-      sleep(0.07)
+      sleep(0.1)
     end
     print "\r      \r"
   end
@@ -208,22 +204,12 @@ def switch_active_competitor(active_competitor)
 end
 
 def set_active_competitor(competitor)
-  player_first = ''
-  loop do
-    puts "Do you want to go first? (y/n)"
-    player_first = gets.chomp.downcase
-    if ['y', 'n', 'yes', 'no'].include?(player_first)
-      break
-    else
-      puts "That was not a valid response. Please enter 'y' or 'n'"
-    end
-  end
+  puts "Do you want to go first? (y/n)"
+  player_first = gets.chomp.downcase
+  competitor.replace('player') if ['yes', 'y'].include?(player_first)
+  competitor.replace('computer') if ['no', 'n'].include?(player_first)
   
-  if ['yes', 'y'].include?(player_first)
-    competitor.replace('player')
-  else
-    competitor.replace('computer')
-  end
+  set_active_competitor(competitor) unless ['y', 'n', 'yes', 'no']
 end
 
 def mark_a_square(competitor, board)
