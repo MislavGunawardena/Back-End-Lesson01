@@ -13,13 +13,13 @@ end
 
 def available_rows(board)
   [1,2,3].select do |row_no|
-    set_of_rows(board)[row_no - 1].any? { |col_no| col_no == ' ' }
+    rows(board)[row_no - 1].any? { |col_no| col_no == ' ' }
   end
 end
 
-def available_columns(cell, board)
+def available_columns(chosen_row, board)
   [1,2,3].select do |col_no|
-    board[cell[0] - 1][col_no - 1] == ' '
+    board[chosen_row][col_no - 1] == ' '
   end
 end
 
@@ -34,46 +34,43 @@ def numbers_in_array(arr)
   end
 end
 
-def player_chooses_row(cell, board)
-  row = ''
-  loop do
-    puts "Please enter a row number : #{numbers_in_array(available_rows(board))}."
-    row = gets.chomp.to_i
-    if available_rows(board).include?(row)
-      break
-    else
-      puts "That's not a valid row number. "
-    end
+def player_sets_row(sqr, board)
+  puts "Please enter a row number : #{numbers_in_array(available_rows(board))}."
+  row = gets.chomp.to_i
+  if available_rows(board).include?(row)
+    sqr[0] = row - 1
+    return
   end
-  cell[0] = row
+  
+  puts "That's not a valid row number. "
+  player_sets_row(sqr, board)
 end
 
-def player_chooses_column(cell, board)
-  column = ''
-  loop do
-    puts "Please enter a column number : #{numbers_in_array(available_columns(cell, board))}."
-    column = gets.chomp.to_i
-    if [1, 2, 3].include?(column)
-      break
-    else
-      puts "That's not a valid column number. Please enter #{numbers_in_array(available_columns(cell, board))}."
-    end
+def player_sets_column(sqr, board)
+  puts "Please enter a column number : #{numbers_in_array(available_columns(sqr[0], board))}."
+  column = gets.chomp.to_i
+  if [1, 2, 3].include?(column)
+    sqr[1] = column - 1
+    return
   end
-  cell[1] = column
+  
+  puts "That's not a valid column number. Please enter #{numbers_in_array(available_columns(sqr, board))}."
+  player_sets_row(sqr, board)
 end
 
 def player_marks_square(board)
   loop do
-    marked_cell = ['', '']
-    player_chooses_row(marked_cell, board)
-    player_chooses_column(marked_cell, board)
+    square = [nil, nil]
+    player_sets_row(square, board)
+    player_sets_column(square, board)
+    row_no, col_no = square
 
-    if board[marked_cell[0] - 1][marked_cell[1] - 1] == ' '
-      board[marked_cell[0] - 1][marked_cell[1] - 1] = 'x'
+    if board[row_no][col_no] == ' '
+      board[row_no][col_no] = 'X'
       break
     else
       display_board(board)
-      puts "The cell (#{marked_cell[0]}#{marked_cell[1]}) " +
+      puts "The cell (#{row_no}#{col_no[1]}) " +
            'has already been marked. Please choose another cell'
     end
   end
@@ -83,76 +80,60 @@ def print_dots_while_waiting
   2.times do
     5.times do
       print '.'
-      sleep(0.3)
+      sleep(0.07)
     end
     print "\r      \r"
   end
+end
+
+def empty_squares(board)
+  blank_spaces = []
+  3.times do |row_no|
+    3.times do |col_no|
+      blank_spaces << [row_no, col_no] if board[row_no][col_no] == ' '
+    end 
+  end
+  blank_spaces
 end
 
 def computer_marks_square(board)
   puts "The computer is about to make it's move...."
   print_dots_while_waiting
   
-  open_cells = 
-    board.flatten.select do |cell|
-      cell == ' '
-    end
-  
   if squares_for_computer_win(board).include?(' ')
-    squares_for_computer_win(board).sample.replace('o')
+    squares_for_computer_win(board).sample.replace('O')
   elsif squares_for_player_win(board).include?(' ')
-    squares_for_player_win(board).sample.replace('o')
+    squares_for_player_win(board).sample.replace('O')
   else
-    open_cells.sample.replace('o')
+    chosen_square = empty_squares(board).sample
+    board[chosen_square[0]][chosen_square[1]].replace('O')
   end
-  #open_cells.sample.replace('o')
 end
 
-def set_of_rows(board)
+def rows(board)
   board
 end
 
-def set_of_columns(board)
-  all_columns = []
-  3.times do |counter1|
-    column = []
-    3.times do |counter2|
-      column << board[counter2][counter1]
-    end
-    all_columns << column
-  end
-  
-  all_columns
+def columns(board)
+  board.transpose
 end
 
-def set_of_diagonals(board)
-  all_diagonals = []
-  
+def diagonals(board)
   diagonal_1 = []
   diagonal_2 = []
-  3.times do |counter|
-    diagonal_1 << board[counter][counter] 
-    diagonal_2 << board[2-counter][counter]
-  end
-  all_diagonals.push(diagonal_1, diagonal_2)
-  
-  all_diagonals
+  3.times { |num| diagonal_1 << board[num][num] }
+  3.times { |num| diagonal_2 << board[2 - num][num] }
+  [diagonal_1, diagonal_2]
 end
 
 def winning_sequences(board)
-  winning_combinations = []
-  
-  winning_combinations += set_of_rows(board)
-  winning_combinations += set_of_columns(board)
-  winning_combinations += set_of_diagonals(board)
-  
-  winning_combinations
+  rows(board) + columns(board) + diagonals(board)
 end
 
 def squares_for_computer_win(board)
   sequences_for_computer_win =
     winning_sequences(board).select do |sequence|
-      (sequence.count('o') == 2) && (sequence.count(' ') == 1) 
+      (sequence.count('O') == 2) && (sequence.count(' ') == 1) 
     end
     
   sequences_for_computer_win.flatten.reject { |cell| cell != ' '}
@@ -161,20 +142,20 @@ end
 def squares_for_player_win(board)
   sequences_for_player_win =
     winning_sequences(board).select do |sequence|
-      (sequence.count('x')) == 2 && (sequence.count(' ') == 1)
+      (sequence.count('X')) == 2 && (sequence.count(' ') == 1)
     end
   sequences_for_player_win.flatten.reject { |cell| cell != ' '}
 end
 
 def player_won?(board)
   winning_sequences(board).any? do |arr|
-    arr.all? { |cell| (cell == 'x') }
+    arr.all? { |sqr| (sqr == 'X') }
   end
 end
 
 def computer_won?(board)
   winning_sequences(board).any? do |arr|
-    arr.all? { |cell| (cell == 'o') }
+    arr.all? { |sqr| (sqr == 'O') }
   end
 end
 
@@ -251,18 +232,13 @@ def mark_a_square(competitor, board)
 end
 
 def decide_on_playing_again(play_again)
-  loop do
-    puts 'Do you want to play again? (y/n)'
-    play_again.replace(gets.chomp.downcase)
-    
-    if ['y', 'n', 'yes', 'no'].include?(play_again)
-      break
-    else
-      puts "That was not a valid response. Please enter 'y' or 'n'"
-    end
-  end
+  puts 'Do you want to play again? (y/n)'
+  play_again.replace(gets.chomp.downcase)
+  return if ['y', 'n', 'yes', 'no'].include?(play_again)
+  
+  puts "That was not a valid response. Please enter 'y' or 'n'"
+  decide_on_playing_again(play_again)
 end
-
 
 puts 'Welcome to the tic-tac-toe game!'
 
