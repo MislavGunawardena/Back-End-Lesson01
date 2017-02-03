@@ -1,74 +1,50 @@
-def display_board(board)
-  puts '  1 2 3 '
-  puts '  - - - '
+PLAYER_MARKER = 'X'
+COMPUTER_MARKER = 'Y'
 
-  board.each_with_index do |row, index|
-    print "#{index + 1}"
-    row.each do |cell|
-      print "|#{cell}"
-    end
-    puts "|\n  - - -"
-  end
-end
-
-def available_rows(board)
-  [1,2,3].select do |row_no|
-    rows(board)[row_no - 1].any? { |col_no| col_no == ' ' }
-  end
-end
-
-def available_columns(chosen_row, board)
-  [1,2,3].select do |col_no|
-    board[chosen_row][col_no - 1] == ' '
-  end
+def display_markings(brd)
+  system 'clear'
+  puts <<-EOF
+       |     |   
+    #{brd[1]}  |  #{brd[2]}  | #{brd[3]}    
+       |     |
+  -----+-----+-----
+       |     |     
+    #{brd[4]}  |  #{brd[5]}  | #{brd[6]}
+       |     |
+  -----+-----+-----
+       |     |     
+    #{brd[7]}  |  #{brd[8]}  | #{brd[9]}  
+       |     |
+  EOF
 end
 
 def numbers_in_array(arr)
   last_number = arr.pop
   if arr.size > 1
-    "#{arr.join(', ')}, or #{last_number}"
+    "Choose from : #{arr.join(', ')}, or #{last_number}."
   elsif arr.size == 1
-    "#{arr[0]} or #{last_number}"
+    "Choose from : #{arr[0]} or #{last_number}."
   else
-    "#{last_number}"
+    "#{last_number} is the only available choice."
   end
 end
 
-def player_sets_row(sqr, board)
-  puts "Please enter a row number : #{numbers_in_array(available_rows(board))}."
-  row = gets.chomp.to_i
-  if available_rows(board).include?(row)
-    sqr[0] = row - 1
-  else
-    puts "That's not a valid row number. "
-    player_sets_row(sqr, board)
-  end
+def available_squares(brd)
+  brd.keys.select do |sqr_no|
+    brd[sqr_no] == ' '
+  end 
 end
 
-def player_sets_column(sqr, board)
-  puts "Please enter a column number : #{numbers_in_array(available_columns(sqr[0], board))}."
-  column = gets.chomp.to_i
-  if [1, 2, 3].include?(column)
-    sqr[1] = column - 1
-  else
-    puts "That's not a valid column number. Please enter #{numbers_in_array(available_columns(sqr, board))}."
-    player_sets_row(sqr, board)
-  end
-end
 
-def player_marks_square(board)
-  square = [nil, nil]
-  player_sets_row(square, board)
-  player_sets_column(square, board)
-  row_no, col_no = square
-
-  if board[row_no][col_no] == ' '
-    board[row_no][col_no] = 'X'
+def player_marks_square(brd)
+  puts "Please enter the number of the square you want to mark. " + 
+       "#{numbers_in_array(available_squares(brd))}"
+  sqr = gets.chomp.to_i
+  if available_squares(brd).include?(sqr)
+    brd[sqr] = PLAYER_MARKER
   else
-    display_board(board)
-    puts "The cell (#{row_no}#{col_no}) " +
-         'has already been marked. Please choose another cell'
-    player_marks_square(board)
+    puts "That is not a valid number."
+    player_marks_square(brd)
   end
 end
 
@@ -82,139 +58,131 @@ def print_dots_while_waiting
   end
 end
 
-def empty_squares(board)
-  blank_spaces = []
-  3.times do |row_no|
-    3.times do |col_no|
-      blank_spaces << [row_no, col_no] if board[row_no][col_no] == ' '
-    end 
-  end
-  blank_spaces
+def computer_can_win?(brd)
+  !(squares_for_computer_win(brd).empty?)
 end
 
-def computer_marks_square(board)
+def player_can_win?(brd)
+  !(squares_for_player_win(brd).empty?)
+end
+
+
+def computers_choice(brd)
+  if computer_can_win?(brd)
+    squares_for_computer_win(brd).sample
+  elsif player_can_win?(brd)
+    squares_for_player_win(brd).sample
+  else
+    available_squares(brd).sample
+  end
+end
+
+def computer_marks_square(brd)
   puts "The computer is about to make it's move...."
   print_dots_while_waiting
   
-  if squares_for_computer_win(board).include?(' ')
-    squares_for_computer_win(board).sample.replace('O')
-  elsif squares_for_player_win(board).include?(' ')
-    squares_for_player_win(board).sample.replace('O')
-  else
-    chosen_square = empty_squares(board).sample
-    board[chosen_square[0]][chosen_square[1]].replace('O')
+  brd[computers_choice(brd)] = COMPUTER_MARKER
+end
+
+
+def winning_sequences(brd)
+  [ [1, 2, 3], [4, 5, 6], [7, 8, 9],
+    [1, 4, 7], [2, 5, 8], [3, 6, 9],
+    [1, 5, 9], [7, 5, 3]]
+end
+
+
+def squares_for_computer_win(brd)
+  winning_sqrs  = winning_sequences(brd).select do |arr|
+                    arr.count{ |num| brd[num] == ' ' } == 1
+                  end
+  winning_sqrs.reject! do |arr|
+    arr.any?{ |num| brd[num] == PLAYER_MARKER }
+  end
+  winning_sqrs.flatten.select do |num|
+    brd[num] == ' '
   end
 end
 
-def rows(board)
-  board
-end
-
-def columns(board)
-  board.transpose
-end
-
-def diagonals(board)
-  diagonal_1 = []
-  diagonal_2 = []
-  3.times { |num| diagonal_1 << board[num][num] }
-  3.times { |num| diagonal_2 << board[2 - num][num] }
-  [diagonal_1, diagonal_2]
-end
-
-def winning_sequences(board)
-  rows(board) + columns(board) + diagonals(board)
-end
-
-def squares_for_computer_win(board)
-  sequences_for_computer_win =
-    winning_sequences(board).select do |sequence|
-      (sequence.count('O') == 2) && (sequence.count(' ') == 1) 
-    end
-    
-  sequences_for_computer_win.flatten.reject { |cell| cell != ' '}
-end
-
-def squares_for_player_win(board)
-  sequences_for_player_win =
-    winning_sequences(board).select do |sequence|
-      (sequence.count('X')) == 2 && (sequence.count(' ') == 1)
-    end
-  sequences_for_player_win.flatten.reject { |cell| cell != ' '}
-end
-
-def player_won?(board)
-  winning_sequences(board).any? do |arr|
-    arr.all? { |sqr| (sqr == 'X') }
+def squares_for_player_win(brd)
+  winning_sqrs  = winning_sequences(brd).select do |arr|
+                    arr.count{ |num| brd[num] == ' ' } == 1
+                  end
+  winning_sqrs.reject! do |arr|
+    arr.any?{ |num| brd[num] == COMPUTER_MARKER }
+  end
+  winning_sqrs.flatten.select do |num|
+    brd[num] == ' '
   end
 end
 
-def computer_won?(board)
-  winning_sequences(board).any? do |arr|
-    arr.all? { |sqr| (sqr == 'O') }
+def player_won?(brd)
+  winning_sequences(brd).any? do |arr|
+    arr.all? { |num| (brd[num] == PLAYER_MARKER) }
   end
 end
 
-def board_full?(board)
-  board.flatten.all? { |cell| cell != ' '}
+def computer_won?(brd)
+  winning_sequences(brd).any? do |arr|
+    arr.all? { |num| (brd[num] == COMPUTER_MARKER) }
+  end
 end
 
-def result(board)
-  if player_won?(board)
+def board_full?(brd)
+  brd.values.all? { |sqr| sqr != ' '}
+end
+
+def result(brd)
+  if player_won?(brd)
     'player'
-  elsif computer_won?(board)
+  elsif computer_won?(brd)
     'computer'
-  elsif board_full?(board)
+  elsif board_full?(brd)
     'tie'
   else
     nil
   end
 end
 
-def game_over?(board)
-  !!result(board)
+def game_over?(brd)
+  !!result(brd)
 end
 
-def display_result(board)
-  if result(board) == 'player'
+def display_result(brd)
+  if result(brd) == 'player'
     puts 'You won!'
-  elsif result(board) == 'computer'
+  elsif result(brd) == 'computer'
     puts 'The computer won!'
-  elsif result(board) == 'tie'
+  elsif result(brd) == 'tie'
     puts "It's a tie!"
   end
 end
 
 def empty_board
-  board = []
-  3.times do
-    row = []
-    3.times { row << ' ' }
-    board << row
-  end
-  board
+  brd = {}
+  9.times { |num| brd[num + 1] = ' ' }
+  brd
 end
 
-def switch_active_competitor(active_competitor)
-  if active_competitor == 'player'
-    active_competitor.replace('computer')
+def switch_turn(turn_of)
+  if turn_of == 'player'
+    turn_of.replace('computer')
   else
-    active_competitor.replace('player')
+    turn_of.replace('player')
   end
 end
 
-def set_active_competitor(competitor)
+def set_turn(turn_of)
   puts "Do you want to go first? (y/n)"
   player_first = gets.chomp.downcase
-  competitor.replace('player') if ['yes', 'y'].include?(player_first)
-  competitor.replace('computer') if ['no', 'n'].include?(player_first)
+  turn_of.replace('computer') if ['no', 'n'].include?(player_first)
   
-  set_active_competitor(competitor) unless ['y', 'n', 'yes', 'no']
+  set_turn(turn_of) unless ['y', 'n', 'yes', 'no'].include?(player_first)
 end
 
-def mark_a_square(competitor, board)
-  player_marks_square(board) if competitor == 'player'
-  computer_marks_square(board) if competitor == 'computer'
+def mark_a_square(turn_of, brd)
+  player_marks_square(brd) if turn_of == 'player'
+  computer_marks_square(brd) if turn_of == 'computer'
 end
 
 def decide_on_playing_again(play_again)
@@ -230,16 +198,16 @@ puts 'Welcome to the tic-tac-toe game!'
 
 loop do
   board = empty_board
-  display_board(board)
+  display_markings(board)
   
-  active_competitor = ''
-  set_active_competitor(active_competitor)
+  turn_of = 'player'
+  set_turn(turn_of)
   
   loop do
-    mark_a_square(active_competitor, board)
-    display_board(board)
+    mark_a_square(turn_of, board)
+    display_markings(board)
     break if game_over?(board)
-    switch_active_competitor(active_competitor)
+    switch_turn(turn_of)
   end
 
   display_result(board)
