@@ -1,15 +1,15 @@
 PLAYER_MARKER = 'X'
 COMPUTER_MARKER = 'Y'
 
-def display_markings(brd)
+def display_game(brd, score)
   system 'clear'
   puts <<-EOF
        |     |   
     #{brd[1]}  |  #{brd[2]}  | #{brd[3]}    
-       |     |
-  -----+-----+-----
-       |     |     
-    #{brd[4]}  |  #{brd[5]}  | #{brd[6]}
+       |     |            
+  -----+-----+-----               ** Score **
+       |     |                  You : #{score[:player]}
+    #{brd[4]}  |  #{brd[5]}  | #{brd[6]}            Computer: #{score[:computer]}
        |     |
   -----+-----+-----
        |     |     
@@ -186,7 +186,7 @@ def mark_a_square(turn_of, brd)
 end
 
 def decide_on_playing_again(play_again)
-  puts 'Do you want to play again? (y/n)'
+  puts 'Do you want to play another tournament? (y/n)'
   play_again.replace(gets.chomp.downcase)
   return if ['y', 'n', 'yes', 'no'].include?(play_again)
   
@@ -194,23 +194,69 @@ def decide_on_playing_again(play_again)
   decide_on_playing_again(play_again)
 end
 
+def play_game(turn_of, brd, score)
+  mark_a_square(turn_of, brd)
+  update_score(brd, score)
+  display_game(brd, score)
+  #display_score(score)
+  return if game_over?(brd)
+  
+  switch_turn(turn_of)
+  play_game(turn_of, brd, score)
+end
+
+def update_score(brd, score)
+  if player_won?(brd)
+    score[:player] += 1
+  elsif computer_won?(brd)
+    score[:computer] += 1
+  end
+end
+
+def press_enter_to_continue
+  puts 'Press Enter to continue.'
+  gets
+end
+
+def display_score(score)
+  puts <<-EOF
+  
+         ** Score **
+       You : #{score[:player]}
+  Computer : #{score[:computer]}
+  
+  EOF
+end
+
 puts 'Welcome to the tic-tac-toe game!'
 
 loop do
   board = empty_board
-  display_markings(board)
-  
+  score = {player: 0, computer: 0}
+  display_game(board, score)
+
   turn_of = 'player'
   set_turn(turn_of)
   
   loop do
-    mark_a_square(turn_of, board)
-    display_markings(board)
-    break if game_over?(board)
-    switch_turn(turn_of)
-  end
+    play_game(turn_of, board, score)
+    
+    display_result(board)
+    #display_score(score)
 
-  display_result(board)
+    press_enter_to_continue
+    
+    if score[:player] == 5
+      puts "You won the tournament!"
+      break
+    elsif score[:computer] == 5
+      puts "The computer won the tournament!"
+      break
+    end
+    
+    board = empty_board
+    display_game(board, score)
+  end
 
   play_again = ''
   decide_on_playing_again(play_again)
