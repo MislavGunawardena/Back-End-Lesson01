@@ -1,3 +1,4 @@
+require 'pry'
 PLAYER_MARKER = 'X'.freeze
 COMPUTER_MARKER = 'Y'.freeze
 INITIAL_TURN = 'choose'.freeze
@@ -48,11 +49,12 @@ def player_marks_square(brd)
   prompt "Please enter the number of the square you want to mark.
           Make a choice : #{joinor(available_squares(brd))}"
   sqr = gets.chomp.to_i
-  brd[sqr] = PLAYER_MARKER if available_squares(brd).include?(sqr)
-  return if available_squares(brd).include?(sqr)
-  
-  prompt "That is not a valid number."
-  player_marks_square(brd)
+  if available_squares(brd).include?(sqr)
+    brd[sqr] = PLAYER_MARKER
+  else
+    prompt "That is not a valid number."
+    player_marks_square(brd)
+  end
 end
 
 def print_dots_while_waiting
@@ -249,7 +251,7 @@ end
 prompt 'Welcome to the tic-tac-toe game!'
 
 loop do
-  first_turn = INITIAL_TURN
+  first_turn = INITIAL_TURN.dup
   who_goes_first(first_turn) unless ['player', 'computer'].include?(first_turn)
 
   play_tournament(first_turn)
