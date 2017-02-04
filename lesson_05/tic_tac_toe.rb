@@ -1,5 +1,6 @@
 PLAYER_MARKER = 'X'
 COMPUTER_MARKER = 'Y'
+INITIAL_TURN = 'player'
 
 def prompt(msg)
   puts "=> #{msg}"
@@ -77,6 +78,8 @@ def computers_choice(brd)
     squares_for_computer_win(brd).sample
   elsif player_can_win?(brd)
     squares_for_player_win(brd).sample
+  elsif available_squares(brd).include?(5)
+    5
   else
     available_squares(brd).sample
   end
@@ -178,12 +181,22 @@ def switch_turn(turn)
 end
 
 def set_first_turn(first_turn)
+  if INITIAL_TURN == 'player'
+    first_turn.replace('player')
+  elsif INITIAL_TURN == 'computer'
+    first_turn.replace('computer')
+  else
+    user_sets_turn(first_turn)
+  end
+end
+
+def user_sets_turn(first_turn)
   prompt "Do you want to go first? (y/n)"
   player_first = gets.chomp.downcase
   first_turn.replace('player') if ['yes', 'y'].include?(player_first)
   first_turn.replace('computer') if ['no', 'n'].include?(player_first)
   
-  set_first_turn(first_turn) unless ['y', 'n', 'yes', 'no'].include?(player_first)
+  user_sets_turn(first_turn) unless ['y', 'n', 'yes', 'no'].include?(player_first)
 end
 
 def mark_a_square(next_turn, brd)
@@ -226,6 +239,7 @@ end
 def play_tournament(first_turn, brd = empty_board, 
                     score = {player: 0, computer: 0})
   next_turn = first_turn.dup
+  display_game(brd, score)
   play_game(next_turn, brd, score)
   display_result(brd)
   press_enter_to_continue
@@ -254,12 +268,10 @@ prompt 'Welcome to the tic-tac-toe game!'
 loop do
   first_turn = ''
   set_first_turn(first_turn)
-  
   play_tournament(first_turn)
 
   play_again = ''
   decide_on_playing_again(play_again)
-
   break if ['n', 'no'].include?(play_again)
 end
 
