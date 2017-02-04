@@ -222,7 +222,8 @@ def press_enter_to_continue
   gets
 end
 
-def play_tournament(brd, score, first_turn)
+def play_tournament(first_turn, brd = empty_board, 
+                    score = {player: 0, computer: 0})
   next_turn = first_turn.dup
   play_game(next_turn, brd, score)
   display_result(brd)
@@ -234,8 +235,9 @@ def play_tournament(brd, score, first_turn)
   brd = empty_board
   display_game(brd, score)
   switch_turn(first_turn)
-  play_tournament(brd, score, first_turn)
+  play_tournament(first_turn, brd, score)
 end
+
 
 def tournament_over?(score)
   [score[:player], score[:computer?]].include?(5)
@@ -249,14 +251,10 @@ end
 prompt 'Welcome to the tic-tac-toe game!'
 
 loop do
-  board = empty_board
-  score = {player: 0, computer: 0}
-  display_game(board, score)
-
   first_turn = 'player'
   set_first_turn(first_turn)
   
-  play_tournament(board, score, first_turn)
+  play_tournament(first_turn)
 
   play_again = ''
   decide_on_playing_again(play_again)
