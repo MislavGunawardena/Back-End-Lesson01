@@ -8,8 +8,8 @@ def display_game(brd, score)
     #{brd[1]}  |  #{brd[2]}  | #{brd[3]}    
        |     |            
   -----+-----+-----               ** Score **
-       |     |                  You : #{score[:player]}
-    #{brd[4]}  |  #{brd[5]}  | #{brd[6]}            Computer: #{score[:computer]}
+       |     |                 You : #{score[:player]}
+    #{brd[4]}  |  #{brd[5]}  | #{brd[6]}           Computer: #{score[:computer]}
        |     |
   -----+-----+-----
        |     |     
@@ -18,6 +18,18 @@ def display_game(brd, score)
   EOF
 end
 
+def joinor(arr, seperator = ', ', str = 'or')
+  last_number = arr.pop
+  if arr.size > 1
+    "#{arr.join("#{seperator}")}, #{str} #{last_number}"
+  elsif arr.size == 1
+    "#{arr[0]} #{str} #{last_number}"
+  else
+    "#{last_number}"
+  end
+end
+
+=begin
 def numbers_in_array(arr)
   last_number = arr.pop
   if arr.size > 1
@@ -28,6 +40,7 @@ def numbers_in_array(arr)
     "#{last_number} is the only available choice."
   end
 end
+=end
 
 def available_squares(brd)
   brd.keys.select do |sqr_no|
@@ -38,7 +51,8 @@ end
 
 def player_marks_square(brd)
   puts "Please enter the number of the square you want to mark. " + 
-       "#{numbers_in_array(available_squares(brd))}"
+       "Make a choice : #{joinor(available_squares(brd))}"
+       #"Make a choice : #{numbers_in_array(available_squares(brd))}"
   sqr = gets.chomp.to_i
   if available_squares(brd).include?(sqr)
     brd[sqr] = PLAYER_MARKER
@@ -164,25 +178,25 @@ def empty_board
   brd
 end
 
-def switch_turn(turn_of)
-  if turn_of == 'player'
-    turn_of.replace('computer')
+def switch_turn(turn)
+  if turn == 'player'
+    turn.replace('computer')
   else
-    turn_of.replace('player')
+    turn.replace('player')
   end
 end
 
-def set_turn(turn_of)
+def set_first_turn(first_turn)
   puts "Do you want to go first? (y/n)"
   player_first = gets.chomp.downcase
-  turn_of.replace('computer') if ['no', 'n'].include?(player_first)
+  first_turn.replace('computer') if ['no', 'n'].include?(player_first)
   
-  set_turn(turn_of) unless ['y', 'n', 'yes', 'no'].include?(player_first)
+  set_first_turn(first_turn) unless ['y', 'n', 'yes', 'no'].include?(player_first)
 end
 
-def mark_a_square(turn_of, brd)
-  player_marks_square(brd) if turn_of == 'player'
-  computer_marks_square(brd) if turn_of == 'computer'
+def mark_a_square(next_turn, brd)
+  player_marks_square(brd) if next_turn == 'player'
+  computer_marks_square(brd) if next_turn == 'computer'
 end
 
 def decide_on_playing_again(play_again)
@@ -194,15 +208,14 @@ def decide_on_playing_again(play_again)
   decide_on_playing_again(play_again)
 end
 
-def play_game(turn_of, brd, score)
-  mark_a_square(turn_of, brd)
+def play_game(next_turn, brd, score)
+  mark_a_square(next_turn, brd)
   update_score(brd, score)
   display_game(brd, score)
-  #display_score(score)
   return if game_over?(brd)
   
-  switch_turn(turn_of)
-  play_game(turn_of, brd, score)
+  switch_turn(next_turn)
+  play_game(next_turn, brd, score)
 end
 
 def update_score(brd, score)
@@ -218,16 +231,6 @@ def press_enter_to_continue
   gets
 end
 
-def display_score(score)
-  puts <<-EOF
-  
-         ** Score **
-       You : #{score[:player]}
-  Computer : #{score[:computer]}
-  
-  EOF
-end
-
 puts 'Welcome to the tic-tac-toe game!'
 
 loop do
@@ -235,14 +238,14 @@ loop do
   score = {player: 0, computer: 0}
   display_game(board, score)
 
-  turn_of = 'player'
-  set_turn(turn_of)
+  first_turn = 'player'
+  set_first_turn(first_turn)
   
   loop do
-    play_game(turn_of, board, score)
+    next_turn = first_turn.dup
+    play_game(next_turn, board, score)
     
     display_result(board)
-    #display_score(score)
 
     press_enter_to_continue
     
@@ -256,6 +259,7 @@ loop do
     
     board = empty_board
     display_game(board, score)
+    switch_turn(first_turn)
   end
 
   play_again = ''
