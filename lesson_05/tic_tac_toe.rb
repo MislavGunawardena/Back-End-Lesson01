@@ -1,6 +1,6 @@
 PLAYER_MARKER = 'X'
 COMPUTER_MARKER = 'Y'
-INITIAL_TURN = 'player'
+INITIAL_TURN = 'choose'
 
 def prompt(msg)
   puts "=> #{msg}"
@@ -255,12 +255,12 @@ end
 
 
 def tournament_over?(score)
-  [score[:player], score[:computer?]].include?(5)
+  [score[:player], score[:computer]].include?(2)
 end
 
 def display_tournament_result(score)
-  prompt "You won the tournament!" if score[:player] == 5
-  prompt "The computer won the tournament!" if score[:computer] == 5
+  prompt "You won the tournament!" if score[:player] == 2
+  prompt "The computer won the tournament!" if score[:computer] == 2
 end
 
 prompt 'Welcome to the tic-tac-toe game!'
