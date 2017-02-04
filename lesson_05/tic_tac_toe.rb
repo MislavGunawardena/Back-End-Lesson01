@@ -5,6 +5,7 @@ INITIAL_TURN = 'choose'.freeze
 WINNING_SEQUENCES = [[1, 2, 3], [4, 5, 6], [7, 8, 9],
                      [1, 4, 7], [2, 5, 8], [3, 6, 9],
                      [1, 5, 9], [7, 5, 3]].freeze
+ROUNDS_PER_TOURNAMENT = 5
 
 def prompt(msg)
   puts "=> #{msg}"
@@ -242,12 +243,14 @@ def play_tournament(first_turn, brd = empty_board,
 end
 
 def tournament_over?(score)
-  [score[:player], score[:computer]].include?(5)
+  [score[:player], score[:computer]].include?(ROUNDS_PER_TOURNAMENT)
 end
 
 def display_tournament_result(score)
-  prompt "You won the tournament!" if score[:player] == 5
-  prompt "The computer won the tournament!" if score[:computer] == 5
+  prompt "You won the tournament!" if score[:player] == ROUNDS_PER_TOURNAMENT
+  if score[:computer] == ROUNDS_PER_TOURNAMENT
+    prompt "The computer won the tournament!"
+  end
 end
 
 prompt 'Welcome to the tic-tac-toe game!'
