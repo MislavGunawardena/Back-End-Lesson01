@@ -177,12 +177,14 @@ end
 def who_goes_first(first_turn)
   prompt "Do you want to go first? (y/n)"
   player_first = gets.chomp.downcase
-  first_turn.replace('player') if ['yes', 'y'].include?(player_first)
-  first_turn.replace('computer') if ['no', 'n'].include?(player_first)
-  return if ['y', 'n', 'yes', 'no'].include?(player_first)
-  
-  prompt "That is not a valid input, you must enter 'y', or 'n'"
-  who_goes_first(first_turn)
+  if ['yes', 'y'].include?(player_first)
+    first_turn.replace('player')
+  elsif ['no', 'n'].include?(player_first)
+    first_turn.replace('computer')
+  else
+    prompt "That is not a valid input, you must enter 'y', or 'n'"
+    who_goes_first(first_turn)
+  end
 end
 
 def mark_a_square(next_turn, brd)
