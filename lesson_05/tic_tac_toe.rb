@@ -1,6 +1,10 @@
 PLAYER_MARKER = 'X'
 COMPUTER_MARKER = 'Y'
 
+def prompt(msg)
+  puts "=> #{msg}"
+end
+
 def display_game(brd, score)
   system 'clear'
   puts <<-EOF
@@ -15,6 +19,7 @@ def display_game(brd, score)
        |     |     
     #{brd[7]}  |  #{brd[8]}  | #{brd[9]}  
        |     |
+       
   EOF
 end
 
@@ -29,19 +34,6 @@ def joinor(arr, seperator = ', ', str = 'or')
   end
 end
 
-=begin
-def numbers_in_array(arr)
-  last_number = arr.pop
-  if arr.size > 1
-    "Choose from : #{arr.join(', ')}, or #{last_number}."
-  elsif arr.size == 1
-    "Choose from : #{arr[0]} or #{last_number}."
-  else
-    "#{last_number} is the only available choice."
-  end
-end
-=end
-
 def available_squares(brd)
   brd.keys.select do |sqr_no|
     brd[sqr_no] == ' '
@@ -50,14 +42,13 @@ end
 
 
 def player_marks_square(brd)
-  puts "Please enter the number of the square you want to mark. " + 
+  prompt "Please enter the number of the square you want to mark. " + 
        "Make a choice : #{joinor(available_squares(brd))}"
-       #"Make a choice : #{numbers_in_array(available_squares(brd))}"
   sqr = gets.chomp.to_i
   if available_squares(brd).include?(sqr)
     brd[sqr] = PLAYER_MARKER
   else
-    puts "That is not a valid number."
+    prompt "That is not a valid number."
     player_marks_square(brd)
   end
 end
@@ -92,7 +83,7 @@ def computers_choice(brd)
 end
 
 def computer_marks_square(brd)
-  puts "The computer is about to make it's move...."
+  prompt "The computer is about to make it's move...."
   print_dots_while_waiting
   
   brd[computers_choice(brd)] = COMPUTER_MARKER
@@ -164,11 +155,11 @@ end
 
 def display_result(brd)
   if result(brd) == 'player'
-    puts 'You won!'
+    prompt 'You won!'
   elsif result(brd) == 'computer'
-    puts 'The computer won!'
+    prompt 'The computer won!'
   elsif result(brd) == 'tie'
-    puts "It's a tie!"
+    prompt "It's a tie!"
   end
 end
 
@@ -187,7 +178,7 @@ def switch_turn(turn)
 end
 
 def set_first_turn(first_turn)
-  puts "Do you want to go first? (y/n)"
+  prompt "Do you want to go first? (y/n)"
   player_first = gets.chomp.downcase
   first_turn.replace('computer') if ['no', 'n'].include?(player_first)
   
@@ -200,11 +191,11 @@ def mark_a_square(next_turn, brd)
 end
 
 def decide_on_playing_again(play_again)
-  puts 'Do you want to play another tournament? (y/n)'
+  prompt 'Do you want to play another tournament? (y/n)'
   play_again.replace(gets.chomp.downcase)
   return if ['y', 'n', 'yes', 'no'].include?(play_again)
   
-  puts "That was not a valid response. Please enter 'y' or 'n'"
+  prompt "That was not a valid response. Please enter 'y' or 'n'"
   decide_on_playing_again(play_again)
 end
 
@@ -227,11 +218,11 @@ def update_score(brd, score)
 end
 
 def press_enter_to_continue
-  puts 'Press Enter to continue.'
+  prompt 'Press Enter to continue.'
   gets
 end
 
-puts 'Welcome to the tic-tac-toe game!'
+prompt 'Welcome to the tic-tac-toe game!'
 
 loop do
   board = empty_board
@@ -250,10 +241,10 @@ loop do
     press_enter_to_continue
     
     if score[:player] == 5
-      puts "You won the tournament!"
+      prompt "You won the tournament!"
       break
     elsif score[:computer] == 5
-      puts "The computer won the tournament!"
+      prompt "The computer won the tournament!"
       break
     end
     
@@ -268,4 +259,4 @@ loop do
   break if ['n', 'no'].include?(play_again)
 end
 
-puts "Thank you for playing tic-tac-toe. Have a good day!"
+prompt "Thank you for playing tic-tac-toe. Have a good day!"
