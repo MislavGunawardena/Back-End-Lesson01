@@ -180,6 +180,7 @@ end
 def set_first_turn(first_turn)
   prompt "Do you want to go first? (y/n)"
   player_first = gets.chomp.downcase
+  first_turn.replace('player') if ['yes', 'y'].include?(player_first)
   first_turn.replace('computer') if ['no', 'n'].include?(player_first)
   
   set_first_turn(first_turn) unless ['y', 'n', 'yes', 'no'].include?(player_first)
@@ -251,7 +252,7 @@ end
 prompt 'Welcome to the tic-tac-toe game!'
 
 loop do
-  first_turn = 'player'
+  first_turn = ''
   set_first_turn(first_turn)
   
   play_tournament(first_turn)
