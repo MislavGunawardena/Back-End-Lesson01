@@ -188,7 +188,7 @@ def press_enter_to_continue
   gets
 end
 
-def result_of_round(brd)
+def display_round_result(brd)
   if result(brd) == 'player'
     prompt 'You won!'
   elsif result(brd) == 'computer'
@@ -228,7 +228,7 @@ def play_tournament(first_turn, brd = empty_board,
   next_turn = first_turn.dup
   display_game(brd, score)
   play_a_round(next_turn, brd, score)
-  result_of_round(brd)
+  display_round_result(brd)
   press_enter_to_continue
 
   display_tournament_result(score) if tournament_over?(score)
