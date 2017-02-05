@@ -232,9 +232,11 @@ def play_tournament(first_turn, brd = empty_board,
   next_turn = first_turn.dup
   display_game(brd, score)
   play_a_round(next_turn, brd, score)
-
-  display_tournament_result(score) if tournament_over?(score)
-  return if tournament_over?(score)
+  
+  if tournament_over?(score)
+    display_tournament_result(score)
+    return
+  end
 
   brd = empty_board
   display_game(brd, score)
