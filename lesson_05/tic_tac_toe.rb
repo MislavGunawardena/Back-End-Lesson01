@@ -5,7 +5,7 @@ INITIAL_TURN = 'choose'.freeze
 WINNING_SEQUENCES = [[1, 2, 3], [4, 5, 6], [7, 8, 9],
                      [1, 4, 7], [2, 5, 8], [3, 6, 9],
                      [1, 5, 9], [7, 5, 3]].freeze
-ROUNDS_PER_TOURNAMENT = 2
+ROUNDS_PER_TOURNAMENT = 5
 
 def prompt(msg)
   puts "=> #{msg}"
@@ -126,8 +126,8 @@ def computer_marks_square(brd)
 end
 
 def player_marks_square(brd)
-  prompt 'Please enter the number of the square you want to mark. ' +
-          "Make a choice: #{joinor(available_squares(brd))}"
+  prompt 'Please enter the number of the square you want to mark.'
+  prompt "Make a choice: #{joinor(available_squares(brd))}"
   sqr = gets.chomp.to_i
   if available_squares(brd).include?(sqr)
     brd[sqr] = PLAYER_MARKER
@@ -232,7 +232,7 @@ def play_tournament(first_turn, brd = empty_board,
   next_turn = first_turn.dup
   display_game(brd, score)
   play_a_round(next_turn, brd, score)
-  
+
   if tournament_over?(score)
     display_tournament_result(score)
     return
