@@ -202,7 +202,11 @@ def play_a_round(next_turn, brd, score)
   mark_a_square(next_turn, brd)
   update_score(brd, score)
   display_game(brd, score)
-  return if game_over?(brd)
+  if game_over?(brd)
+    display_round_result(brd)
+    press_enter_to_continue
+    return
+  end
 
   switch_turn(next_turn)
   play_a_round(next_turn, brd, score)
@@ -228,8 +232,6 @@ def play_tournament(first_turn, brd = empty_board,
   next_turn = first_turn.dup
   display_game(brd, score)
   play_a_round(next_turn, brd, score)
-  display_round_result(brd)
-  press_enter_to_continue
 
   display_tournament_result(score) if tournament_over?(score)
   return if tournament_over?(score)
