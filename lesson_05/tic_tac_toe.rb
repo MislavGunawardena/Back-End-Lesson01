@@ -5,7 +5,7 @@ INITIAL_TURN = 'choose'.freeze
 WINNING_SEQUENCES = [[1, 2, 3], [4, 5, 6], [7, 8, 9],
                      [1, 4, 7], [2, 5, 8], [3, 6, 9],
                      [1, 5, 9], [7, 5, 3]].freeze
-ROUNDS_PER_TOURNAMENT = 5
+ROUNDS_PER_TOURNAMENT = 2
 
 def prompt(msg)
   puts "=> #{msg}"
@@ -126,8 +126,8 @@ def computer_marks_square(brd)
 end
 
 def player_marks_square(brd)
-  prompt "Please enter the number of the square you want to mark.
-          Make a choice : #{joinor(available_squares(brd))}"
+  prompt 'Please enter the number of the square you want to mark. ' +
+          "Make a choice: #{joinor(available_squares(brd))}"
   sqr = gets.chomp.to_i
   if available_squares(brd).include?(sqr)
     brd[sqr] = PLAYER_MARKER
@@ -223,7 +223,7 @@ def continue_or_stop(play_again)
   play_again.replace(gets.chomp.downcase)
   return if ['y', 'n', 'yes', 'no'].include?(play_again)
 
-  prompt "That was not a valid response. Please enter 'y' or 'n'"
+  prompt "That was not a valid response. Please enter 'y' or 'n'."
   continue_or_stop(play_again)
 end
 
@@ -252,7 +252,7 @@ def who_goes_first(first_turn)
   elsif ['no', 'n'].include?(player_first)
     first_turn.replace('computer')
   else
-    prompt "That is not a valid input, you must enter 'y', or 'n'"
+    prompt "That is not a valid input, you must enter 'y', or 'n'."
     who_goes_first(first_turn)
   end
 end
