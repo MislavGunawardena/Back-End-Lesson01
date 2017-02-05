@@ -5,7 +5,7 @@ INITIAL_TURN = 'choose'.freeze
 WINNING_SEQUENCES = [[1, 2, 3], [4, 5, 6], [7, 8, 9],
                      [1, 4, 7], [2, 5, 8], [3, 6, 9],
                      [1, 5, 9], [7, 5, 3]].freeze
-ROUNDS_PER_TOURNAMENT = 2
+ROUNDS_PER_TOURNAMENT = 5
 
 def prompt(msg)
   puts "=> #{msg}"
@@ -29,82 +29,19 @@ def display_game(brd, score)
   EOF
 end
 
-def joinor(arr, seperator = ', ', conjunction = 'or')
-  last_number = arr.pop
-  if arr.size > 1
-    "#{arr.join(seperator)}, #{conjunction} #{last_number}"
-  elsif arr.size == 1
-    "#{arr[0]} #{conjunction} #{last_number}"
-  else
-    last_number.to_s
+def board_full?(brd)
+  brd.values.all? { |sqr| sqr != ' ' }
+end
+
+def player_won?(brd)
+  WINNING_SEQUENCES.any? do |arr|
+    arr.all? { |num| (brd[num] == PLAYER_MARKER) }
   end
 end
 
-def available_squares(brd)
-  brd.keys.select do |num|
-    brd[num] == ' '
-  end
-end
-
-def player_marks_square(brd)
-  prompt "Please enter the number of the square you want to mark.
-          Make a choice : #{joinor(available_squares(brd))}"
-  sqr = gets.chomp.to_i
-  if available_squares(brd).include?(sqr)
-    brd[sqr] = PLAYER_MARKER
-  else
-    prompt "That is not a valid number."
-    player_marks_square(brd)
-  end
-end
-
-def print_dots_while_waiting
-  2.times do
-    5.times do
-      print '.'
-      sleep(0.1)
-    end
-    print "\r      \r"
-  end
-end
-
-def computer_can_win?(brd)
-  !squares_for_computer_win(brd).empty?
-end
-
-def player_can_win?(brd)
-  !squares_for_player_win(brd).empty?
-end
-
-def computers_choice(brd)
-  if computer_can_win?(brd)
-    squares_for_computer_win(brd).sample
-  elsif player_can_win?(brd)
-    squares_for_player_win(brd).sample
-  elsif available_squares(brd).include?(5)
-    5
-  else
-    available_squares(brd).sample
-  end
-end
-
-def computer_marks_square(brd)
-  prompt "The computer is about to make it's move...."
-  print_dots_while_waiting
-
-  brd[computers_choice(brd)] = COMPUTER_MARKER
-end
-
-def squares_for_computer_win(brd)
-  winning_sqrs =
-    WINNING_SEQUENCES.select do |arr|
-      arr.count { |num| brd[num] == ' ' } == 1
-    end
-  winning_sqrs.reject! do |arr|
-    arr.any? { |num| brd[num] == PLAYER_MARKER }
-  end
-  winning_sqrs.flatten.select do |num|
-    brd[num] == ' '
+def computer_won?(brd)
+  WINNING_SEQUENCES.any? do |arr|
+    arr.all? { |num| (brd[num] == COMPUTER_MARKER) }
   end
 end
 
@@ -121,20 +58,83 @@ def squares_for_player_win(brd)
   end
 end
 
-def player_won?(brd)
-  WINNING_SEQUENCES.any? do |arr|
-    arr.all? { |num| (brd[num] == PLAYER_MARKER) }
+def player_can_win?(brd)
+  !squares_for_player_win(brd).empty?
+end
+
+def squares_for_computer_win(brd)
+  winning_sqrs =
+    WINNING_SEQUENCES.select do |arr|
+      arr.count { |num| brd[num] == ' ' } == 1
+    end
+  winning_sqrs.reject! do |arr|
+    arr.any? { |num| brd[num] == PLAYER_MARKER }
+  end
+  winning_sqrs.flatten.select do |num|
+    brd[num] == ' '
   end
 end
 
-def computer_won?(brd)
-  WINNING_SEQUENCES.any? do |arr|
-    arr.all? { |num| (brd[num] == COMPUTER_MARKER) }
+def computer_can_win?(brd)
+  !squares_for_computer_win(brd).empty?
+end
+
+def computers_choice(brd)
+  if computer_can_win?(brd)
+    squares_for_computer_win(brd).sample
+  elsif player_can_win?(brd)
+    squares_for_player_win(brd).sample
+  elsif available_squares(brd).include?(5)
+    5
+  else
+    available_squares(brd).sample
   end
 end
 
-def board_full?(brd)
-  brd.values.all? { |sqr| sqr != ' ' }
+def print_dots_while_waiting
+  2.times do
+    5.times do
+      print '.'
+      sleep(0.1)
+    end
+    print "\r      \r"
+  end
+end
+
+def available_squares(brd)
+  brd.keys.select do |num|
+    brd[num] == ' '
+  end
+end
+
+def joinor(arr, seperator = ', ', conjunction = 'or')
+  last_number = arr.pop
+  if arr.size > 1
+    "#{arr.join(seperator)}, #{conjunction} #{last_number}"
+  elsif arr.size == 1
+    "#{arr[0]} #{conjunction} #{last_number}"
+  else
+    last_number.to_s
+  end
+end
+
+def computer_marks_square(brd)
+  prompt "The computer is about to make it's move...."
+  print_dots_while_waiting
+
+  brd[computers_choice(brd)] = COMPUTER_MARKER
+end
+
+def player_marks_square(brd)
+  prompt "Please enter the number of the square you want to mark.
+          Make a choice : #{joinor(available_squares(brd))}"
+  sqr = gets.chomp.to_i
+  if available_squares(brd).include?(sqr)
+    brd[sqr] = PLAYER_MARKER
+  else
+    prompt "That is not a valid number."
+    player_marks_square(brd)
+  end
 end
 
 def result(brd)
@@ -151,17 +151,17 @@ def game_over?(brd)
   !!result(brd)
 end
 
-def mark_a_square(next_turn, brd)
-  player_marks_square(brd) if next_turn == 'player'
-  computer_marks_square(brd) if next_turn == 'computer'
-end
-
 def update_score(brd, score)
   if player_won?(brd)
     score[:player] += 1
   elsif computer_won?(brd)
     score[:computer] += 1
   end
+end
+
+def mark_a_square(next_turn, brd)
+  player_marks_square(brd) if next_turn == 'player'
+  computer_marks_square(brd) if next_turn == 'computer'
 end
 
 def switch_turn(turn)
