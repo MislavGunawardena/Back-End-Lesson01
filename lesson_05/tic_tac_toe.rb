@@ -1,7 +1,7 @@
 require 'pry'
 PLAYER_MARKER = 'X'.freeze
 COMPUTER_MARKER = 'Y'.freeze
-INITIAL_TURN = 'choose'.freeze
+INITIAL_TURN = :choose
 WINNING_SEQUENCES = [[1, 2, 3], [4, 5, 6], [7, 8, 9],
                      [1, 4, 7], [2, 5, 8], [3, 6, 9],
                      [1, 5, 9], [7, 5, 3]].freeze
@@ -143,15 +143,15 @@ def update_scores(brd, scores)
 end
 
 def mark_a_square(next_turn, brd)
-  player_marks_square(brd) if next_turn == 'player'
-  computer_marks_square(brd) if next_turn == 'computer'
+  player_marks_square(brd) if next_turn == :player
+  computer_marks_square(brd) if next_turn == :computer
 end
 
-def switch_turn(turn)
-  if turn == 'player'
-    turn.replace('computer')
+def other_competitor(competitor)
+  if competitor == :player
+    :computer
   else
-    turn.replace('player')
+    :player
   end
 end
 
@@ -227,12 +227,12 @@ def who_goes_first
 end
 
 loop do
-  first_turn = who_goes_first.to_s
+  first_turn = who_goes_first
   scores = { player: 0, computer: 0 }
 
   loop do
     board = empty_board
-    next_turn = first_turn.dup
+    next_turn = first_turn
     display_game(board, scores)
 
     loop do
@@ -245,14 +245,14 @@ loop do
         break
       end
 
-      switch_turn(next_turn)
+      next_turn = other_competitor(next_turn)
     end
 
     if tournament_over?(scores)
       display_tournament_result(scores)
       break
     end
-    switch_turn(first_turn)
+    first_turn = other_competitor(first_turn)
   end
 
   break unless another_tournament?
