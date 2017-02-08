@@ -1,7 +1,7 @@
 require 'pry'
 PLAYER_MARKER = 'X'.freeze
 COMPUTER_MARKER = 'Y'.freeze
-INITIAL_TURN = :choose
+INITIAL_TURN = :choose # :player, :computer, or :choose
 WINNING_SEQUENCES = [[1, 2, 3], [4, 5, 6], [7, 8, 9],
                      [1, 4, 7], [2, 5, 8], [3, 6, 9],
                      [1, 5, 9], [7, 5, 3]].freeze
@@ -207,8 +207,8 @@ def another_tournament?
 end
 
 def who_goes_first
-  return :player if INITIAL_TURN == 'player'
-  return :computer if INITIAL_TURN == 'computer'
+  return :player if INITIAL_TURN == :player
+  return :computer if INITIAL_TURN == :computer
 
   player_first = ''
   loop do
