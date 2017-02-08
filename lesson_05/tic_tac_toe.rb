@@ -1,4 +1,3 @@
-require 'pry'
 PLAYER_MARKER = 'X'.freeze
 COMPUTER_MARKER = 'Y'.freeze
 INITIAL_TURN = :choose # :player, :computer, or :choose
