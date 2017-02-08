@@ -5,21 +5,21 @@ INITIAL_TURN = 'choose'.freeze
 WINNING_SEQUENCES = [[1, 2, 3], [4, 5, 6], [7, 8, 9],
                      [1, 4, 7], [2, 5, 8], [3, 6, 9],
                      [1, 5, 9], [7, 5, 3]].freeze
-ROUNDS_PER_TOURNAMENT = 2
+TOURNAMENT_WINNING_SCORE = 2
 
 def prompt(msg)
   puts "=> #{msg}"
 end
 
-def display_game(brd, score)
+def display_game(brd, scores)
   system 'clear'
   puts <<-EOF
        |     |
     #{brd[1]}  |  #{brd[2]}  | #{brd[3]}
        |     |
   -----+-----+-----               ** Score **
-       |     |                 You : #{score[:player]}
-    #{brd[4]}  |  #{brd[5]}  | #{brd[6]}           Computer: #{score[:computer]}
+       |     |                 You : #{scores[:player]}
+    #{brd[4]}  |  #{brd[5]}  | #{brd[6]}           Computer: #{scores[:computer]}
        |     |
   -----+-----+-----
        |     |
@@ -33,10 +33,10 @@ def board_full?(brd)
   brd.values.all? { |sqr| sqr != ' ' }
 end
 
-def is_winner?(competitor, brd)
+def winner?(competitor, brd)
   marker = PLAYER_MARKER if competitor == :player
   marker = COMPUTER_MARKER if competitor == :computer
- 
+
   WINNING_SEQUENCES.any? do |arr|
     arr.all? { |num| (brd[num] == marker) }
   end
@@ -52,24 +52,20 @@ def winning_squares(competitor, brd)
   winning_sqrs.reject! do |arr|
     arr.any? { |num| brd[num] == opposite_marker }
   end
-  
+
   winning_sqrs.flatten.select do |num|
     brd[num] == ' '
-  end  
+  end
 end
 
-def player_can_win?(brd)
-  !winning_squares(:player, brd).empty?
-end
-
-def computer_can_win?(brd)
-  !winning_squares(:computer, brd).empty?
+def able_to_win?(competitor, brd)
+  !winning_squares(competitor, brd).empty?
 end
 
 def computers_choice(brd)
-  if computer_can_win?(brd)
+  if able_to_win?(:computer, brd)
     winning_squares(:computer, brd).sample
-  elsif player_can_win?(brd)
+  elsif able_to_win?(:player, brd)
     winning_squares(:player, brd).sample
   elsif available_squares(brd).include?(5)
     5
@@ -125,12 +121,12 @@ def player_marks_square(brd)
 end
 
 def round_result(brd)
-  if is_winner?(:player, brd)
-    'player'
-  elsif is_winner?(:computer, brd)
-    'computer'
+  if winner?(:player, brd)
+    :player
+  elsif winner?(:computer, brd)
+    :computer
   elsif board_full?(brd)
-    'tie' 
+    :tie
   end
 end
 
@@ -139,9 +135,9 @@ def round_over?(brd)
 end
 
 def update_scores(brd, scores)
-  if is_winner?(:player, brd)
+  if winner?(:player, brd)
     scores[:player] += 1
-  elsif is_winner?(:computer, brd)
+  elsif winner?(:computer, brd)
     scores[:computer] += 1
   end
 end
@@ -160,12 +156,14 @@ def switch_turn(turn)
 end
 
 def tournament_over?(scores)
-  scores.values.include?(ROUNDS_PER_TOURNAMENT)
+  scores.values.include?(TOURNAMENT_WINNING_SCORE)
 end
 
-def display_tournament_result(score)
-  prompt "You won the tournament!" if score[:player] == ROUNDS_PER_TOURNAMENT
-  if score[:computer] == ROUNDS_PER_TOURNAMENT
+def display_tournament_result(scores)
+  if scores[:player] == TOURNAMENT_WINNING_SCORE
+    prompt "You won the tournament!"
+  end
+  if scores[:computer] == TOURNAMENT_WINNING_SCORE
     prompt "The computer won the tournament!"
   end
 end
@@ -176,11 +174,11 @@ def press_enter_to_continue
 end
 
 def display_round_result(brd)
-  if round_result(brd) == 'player'
+  if round_result(brd) == :player
     prompt 'You won!'
-  elsif round_result(brd) == 'computer'
+  elsif round_result(brd) == :computer
     prompt 'The computer won!'
-  elsif round_result(brd) == 'tie'
+  elsif round_result(brd) == :tie
     prompt "It's a tie!"
   end
 end
@@ -197,10 +195,10 @@ def another_tournament?
     prompt 'Do you want to play another tournament? (y/n)'
     another_tournament = gets.chomp.downcase
     break if ['y', 'n', 'yes', 'no'].include?(another_tournament)
-  
+
     prompt "That was not a valid response. Please enter 'y' or 'n'."
   end
-    
+
   if ['y', 'yes'].include?(another_tournament)
     true
   elsif ['n', 'no'].include?(another_tournament)
@@ -211,16 +209,16 @@ end
 def who_goes_first
   return :player if INITIAL_TURN == 'player'
   return :computer if INITIAL_TURN == 'computer'
-  
+
   player_first = ''
   loop do
     prompt "Do you want to go first? (y/n)"
     player_first = gets.chomp.downcase
     break if ['y', 'n', 'yes', 'no'].include?(player_first)
-    
+
     prompt "That is not a valid input, you must enter 'y', or 'n'."
   end
-  
+
   if ['y', 'yes'].include?(player_first)
     :player
   else
@@ -230,14 +228,14 @@ end
 
 loop do
   first_turn = who_goes_first.to_s
-  scores = {player: 0, computer: 0}
-  
+  scores = { player: 0, computer: 0 }
+
   loop do
     board = empty_board
-    next_turn = first_turn
+    next_turn = first_turn.dup
     display_game(board, scores)
-    
-    loop do #play a round
+
+    loop do
       mark_a_square(next_turn, board)
       update_scores(board, scores)
       display_game(board, scores)
@@ -246,19 +244,18 @@ loop do
         press_enter_to_continue
         break
       end
-    
+
       switch_turn(next_turn)
     end
 
     if tournament_over?(scores)
       display_tournament_result(scores)
       break
-    end   
+    end
     switch_turn(first_turn)
   end
-  
+
   break unless another_tournament?
 end
 
 prompt "Thank you for playing tic tac toe. Have a good day!"
-
