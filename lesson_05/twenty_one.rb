@@ -46,14 +46,11 @@ def play_again?
   ['y', 'yes'].include?(ans)
 end
 
-def busted?(hand)
-  total(hand) > 21
+def busted?(total)
+  total > 21
 end
 
-def detect_result(player_hand, dealer_hand)
-  player_total = total(player_hand)
-  dealer_total = total(dealer_hand)
-
+def detect_result(player_total, dealer_total)
   if player_total > 21
     :player_busted
   elsif dealer_total > 21
@@ -67,8 +64,8 @@ def detect_result(player_hand, dealer_hand)
   end
 end
 
-def display_result(player_hand, dealer_hand)
-  result = detect_result(player_hand, dealer_hand)
+def display_result(player_total, dealer_total)
+  result = detect_result(player_total, dealer_total)
 
   case result
   when :player_busted
@@ -102,6 +99,8 @@ loop do
     dealer_hand << deck.pop
     player_hand << deck.pop
   end
+  dealer_total = total(dealer_hand)
+  player_total = total(player_hand)
 
   puts '------------------------------------------------------------------'
   puts '------------------------------------------------------------------'
@@ -119,43 +118,45 @@ loop do
 
     if player_turn == 'h'
       player_hand << deck.pop
-      prompt "You choase to hit!"
+      player_total = total(player_hand)
+      prompt "You chose to hit!"
       prompt "Your cards are now: #{player_hand}"
-      prompt "Your total is now : #{total(player_hand)}"
+      prompt "Your total is now : #{player_total}"
     end
 
-    break if player_turn == 's' || busted?(player_hand)
+    break if player_turn == 's' || player_total > 21
   end
 
-  if busted?(player_hand)
-    display_result(player_hand, dealer_hand)
+  if busted?(player_total)
+    display_result(player_total, dealer_total)
     play_again? ? next : break
   else
-    prompt "You stayed at #{total(player_hand)}."
+    prompt "You stayed at #{player_total}."
   end
 
   prompt "Dealer's turn..."
   prompt "Dealer's cards are: #{dealer_hand}"
   loop do
-    break if total(dealer_hand) >= 17
+    break if dealer_total >= 17
     prompt 'The dealer hits...'
     dealer_hand << deck.pop
+    dealer_total = total(dealer_hand)
     prompt "Dealer's cards are now: #{dealer_hand}"
   end
 
-  if busted?(dealer_hand)
-    prompt "The dealer's total is now: #{total(dealer_hand)}"
-    display_result(player_hand, dealer_hand)
+  if busted?(dealer_total)
+    prompt "The dealer's total is now: #{dealer_total}"
+    display_result(player_total, dealer_total)
     play_again? ? next : break
   else
-    prompt "Dealer stays at #{total(dealer_hand)}"
+    prompt "Dealer stays at #{dealer_total}"
   end
 
   puts ' ========== '
-  prompt "Player has #{player_hand} for a total of: #{total(player_hand)}"
-  prompt "Dealer has #{dealer_hand} for a total of: #{total(dealer_hand)}"
+  prompt "Player has #{player_hand} for a total of: #{player_total}"
+  prompt "Dealer has #{dealer_hand} for a total of: #{dealer_total}"
   puts ' ========== '
-  display_result(player_hand, dealer_hand)
+  display_result(player_total, dealer_total)
   puts ''
 
   break unless play_again?
