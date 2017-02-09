@@ -64,8 +64,13 @@ def detect_result(player_total, dealer_total)
   end
 end
 
-def display_result(player_total, dealer_total)
+def display_result(player_hand, dealer_hand, player_total, dealer_total)
   result = detect_result(player_total, dealer_total)
+  
+  puts ' ========== '
+  prompt "Player has #{player_hand} for a total of: #{player_total}"
+  prompt "Dealer has #{dealer_hand} for a total of: #{dealer_total}"
+  puts ' ========== '
 
   case result
   when :player_busted
@@ -128,7 +133,7 @@ loop do
   end
 
   if busted?(player_total)
-    display_result(player_total, dealer_total)
+    display_result(player_hand, dealer_hand, player_total, dealer_total)
     play_again? ? next : break
   else
     prompt "You stayed at #{player_total}."
@@ -146,17 +151,13 @@ loop do
 
   if busted?(dealer_total)
     prompt "The dealer's total is now: #{dealer_total}"
-    display_result(player_total, dealer_total)
+    display_result(player_hand, dealer_hand, player_total, dealer_total)
     play_again? ? next : break
   else
     prompt "Dealer stays at #{dealer_total}"
   end
-
-  puts ' ========== '
-  prompt "Player has #{player_hand} for a total of: #{player_total}"
-  prompt "Dealer has #{dealer_hand} for a total of: #{dealer_total}"
-  puts ' ========== '
-  display_result(player_total, dealer_total)
+  
+  display_result(player_hand, dealer_hand, player_total, dealer_total)
   puts ''
 
   break unless play_again?
