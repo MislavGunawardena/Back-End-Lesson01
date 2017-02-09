@@ -1,5 +1,5 @@
-SUITS = ['H', 'D', 'C', 'S']
-VALUES = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A']
+SUITS = ['H', 'D', 'C', 'S'].freeze
+VALUES = %w(2 3 4 5 6 7 8 9 10 J Q K A).freeze
 
 def prompt(msg)
   puts "=> #{msg}"
@@ -14,23 +14,25 @@ def deal(deck)
 end
 
 def total(cards)
-  total = 0
-  cards.each do |card|
-    if (2..10).cover?(card[1])
-      total += card[1]
-    elsif ['J', 'Q', 'K'].include?(card[1])
-      total += 10
+  sum = 0
+  values = cards.map { |card| card[1] }
+  
+  values.each do |value|
+    if value == 'A'
+      sum += 11
+    elsif value.to_i == 0
+      sum += 10
     else
-      total += 11
+      sum += value.to_i
     end
   end
-  
+
   numbers_of_aces = cards.count { |card| card[1] == 'A' }
   numbers_of_aces.times do
-    total -= 10 if total > 21
+    sum -= 10 if sum > 21
   end
-  
-  total
+
+  sum
 end
 
 def play_again?
@@ -49,9 +51,9 @@ def busted?(hand)
 end
 
 def detect_result(player_hand, dealer_hand)
-  player_total = total(player)
-  dealer_total = total(dealer)
-  
+  player_total = total(player_hand)
+  dealer_total = total(dealer_hand)
+
   if player_total > 21
     :player_busted
   elsif dealer_total > 21
@@ -67,7 +69,7 @@ end
 
 def display_result(player_hand, dealer_hand)
   result = detect_result(player_hand, dealer_hand)
-  
+
   case result
   when :player_busted
     prompt 'You busted! Dealer wins.'
@@ -82,9 +84,17 @@ def display_result(player_hand, dealer_hand)
   end
 end
 
+def press_enter_to_continue
+  prompt 'Press Enter to continue.'
+  gets
+end
+
+system 'clear'
 prompt 'Welcome to Twenty One.'
+press_enter_to_continue
 
 loop do
+  system 'clear'
   deck = initialize_deck
   dealer_hand = []
   player_hand = []
@@ -92,75 +102,61 @@ loop do
     dealer_hand << deck.pop
     player_hand << deck.pop
   end
-  
-  prompt '------------------------------------------------------------------'
-  prompt "The dealer has: #{dealer_hand[0]} and an unknown card"
 
-  
-  loop do #Player turn
-    prompt "You have : #{player_hand}"
-    ans = ''
+  puts '------------------------------------------------------------------'
+  puts '------------------------------------------------------------------'
+  prompt "The dealer has: #{dealer_hand[0]} and an unknown card"
+  prompt "You have : #{player_hand}"
+
+  loop do # Player turn
+    player_turn = ''
     loop do
       puts 'Do you want to (h)it or (s)tay?'
-      ans = gets.chomp.downcase
-      break if ['h', 's'].include?(ans)
+      player_turn = gets.chomp.downcase
+      break if ['h', 's'].include?(player_turn)
       puts "That is not a valid response. You should enter 'h' or 's'"
     end
 
-    if ans == 'h'
+    if player_turn == 'h'
       player_hand << deck.pop
-      busted?(player_hand) ? break : next
+      prompt "You choase to hit!"
+      prompt "Your cards are now: #{player_hand}"
+      prompt "Your total is now : #{total(player_hand)}"
     end
-    break
+
+    break if player_turn == 's' || busted?(player_hand)
   end
 
-  prompt "Your cards are : #{player_hand}, for a total of: #{total(player_hand)}."
   if busted?(player_hand)
-    prompt 'You busted! Dealer won.'
+    display_result(player_hand, dealer_hand)
     play_again? ? next : break
   else
-    prompt "You stayed at #{total(player_hand)} points."
+    prompt "You stayed at #{total(player_hand)}."
   end
- 
-  prompt "Dealer's turn..." 
-  loop do #dealer turn
+
+  prompt "Dealer's turn..."
+  prompt "Dealer's cards are: #{dealer_hand}"
+  loop do
     break if total(dealer_hand) >= 17
     prompt 'The dealer hits...'
     dealer_hand << deck.pop
-    prompt "The dealer's cards are now: #{dealer_hand}"
+    prompt "Dealer's cards are now: #{dealer_hand}"
   end
-  
-  prompt "The dealer has cards: #{dealer_hand}, for a total of: #{total(dealer_hand)}"
-  if busted?(dealer_hand)
-    prompt 'The dealer busted! You won.'
-    play_again? ? next: break
-  else
-    prompt "The dealer stays at #{total(dealer_hand)}"
-  end
-    
-  
-  
-  # display hands.
-  
-  
-  # player hits until he stays.
-      # Ask player if he wants to hit or to stay.
-      # If he elects to hit:
-          #draw a card
-          #calculate total
-          #if total is greater than 21:
-              #bust - display result. 
-              #bypass all steps until the point where the user is asked whether he wants to play again
-          #elsif total <= 21:
-              #Ask all over again whether the player wants to hit or stay and proceed as before.
-      # If he elects to stay:
-          #move on
 
-  
-  # dealer hits until he stays
-  
-  # compare scores
-  
-  # display result
+  if busted?(dealer_hand)
+    prompt "The dealer's total is now: #{total(dealer_hand)}"
+    display_result(player_hand, dealer_hand)
+    play_again? ? next : break
+  else
+    prompt "Dealer stays at #{total(dealer_hand)}"
+  end
+
+  puts ' ========== '
+  prompt "Player has #{player_hand} for a total of: #{total(player_hand)}"
+  prompt "Dealer has #{dealer_hand} for a total of: #{total(dealer_hand)}"
+  puts ' ========== '
+  display_result(player_hand, dealer_hand)
+  puts ''
+
   break unless play_again?
 end
