@@ -16,11 +16,11 @@ end
 def total(cards)
   sum = 0
   values = cards.map { |card| card[1] }
-  
+
   values.each do |value|
     if value == 'A'
       sum += 11
-    elsif value.to_i == 0
+    elsif value.to_i.zero?
       sum += 10
     else
       sum += value.to_i
