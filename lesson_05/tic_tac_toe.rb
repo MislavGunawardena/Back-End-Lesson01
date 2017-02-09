@@ -42,14 +42,15 @@ def winner?(competitor, brd)
 end
 
 def winning_squares(competitor, brd)
-  opposite_marker = COMPUTER_MARKER if competitor == :player
-  opposite_marker = PLAYER_MARKER if competitor == :computer
+  marker = PLAYER_MARKER if competitor == :player
+  marker = COMPUTER_MARKER if competitor == :computer
   winning_sqrs =
     WINNING_SEQUENCES.select do |arr|
       arr.count { |num| brd[num] == ' ' } == 1
     end
-  winning_sqrs.reject! do |arr|
-    arr.any? { |num| brd[num] == opposite_marker }
+  winning_sqrs =
+  winning_sqrs.select do |arr|
+    arr.count { |num| brd[num] == marker } == 2
   end
 
   winning_sqrs.flatten.select do |num|
