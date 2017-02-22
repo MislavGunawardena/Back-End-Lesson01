@@ -199,11 +199,7 @@ def another_tournament?
     prompt "That was not a valid response. Please enter 'y' or 'n'."
   end
 
-  if ['y', 'yes'].include?(another_tournament)
-    true
-  elsif ['n', 'no'].include?(another_tournament)
-    false
-  end
+  ['y', 'yes'].include?(another_tournament)
 end
 
 def who_goes_first
