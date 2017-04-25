@@ -1,11 +1,12 @@
-def method1
-  puts '!'
-  yield
-  puts "+"
-end
+displayed_board = <<EOF
+     |     |     
+     |     |     
+-----+-----+-----
+     |     |     
+     |     |     
+-----+-----+-----
+     |     |     
+     |     |     
+EOF
 
-method1 {
-  puts "hi"
-  break
-  puts 'hi'
-}
+puts displayed_board

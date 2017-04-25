@@ -30,8 +30,18 @@ nil.
 The second item satisfies the condition of the if statement. Thus for the second item, the block returns: value,
 which evaluates to 'bear'.
 
+10) [1, nil, nil]
+The puts statement returns nil. The first element doesn't satisfy the if condition.
 
+***
 
+11) 
+arr = ['10', '11', '9', '7', '8']
+arr.sort! do |a, b|
+  b <=> a
+end
 
-
-
+12)
+books.sort_by do |book|
+  book[:published]
+end
