@@ -1,0 +1,17 @@
+* Always go for the most direct and simpler solution first even if that 
+increases the size of the program, even if there are better ways of doing  
+things. Refactoring can be done later.
+
+* Execute the code, and output something ASAP. Execute the code and view the
+output every time a discrete change is made to the code. It will take up more 
+time, but it will save a lot more time when dubugging.
+
+* In a method, there should be return statements only on 2 places, at the very
+top, as a part of a guard clause, and at the very bottom where an implecit
+return can be implemented. Otherwise it may become hard to read the method.
+
+* Even for small problems, don't forget to extract out logic into helper
+methods when that is possible. 
+
+* Situations where logic is nested within an iteration often provide an
+opportunity to extract functionality to a helper method.

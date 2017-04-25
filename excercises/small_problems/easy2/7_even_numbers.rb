@@ -1,0 +1,1 @@
+(1..99).select { |number| number.even? }.each { |number| puts number }

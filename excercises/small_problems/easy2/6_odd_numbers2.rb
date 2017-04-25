@@ -1,0 +1,1 @@
+1.upto(99) { |index| puts index if index.odd? }

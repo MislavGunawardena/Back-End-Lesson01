@@ -1,0 +1,114 @@
+1) 
+arr.sort { |a, b| b.to_i <=> a.to_i }
+
+2)
+books.sort_by do |book|
+  book[:published]
+end
+
+3)
+  a) arr1[2][1][3]
+  b) arr2[0][:third][0]
+  c) arr3[2][:third][0][0]
+  d) hsh1['b'][1]
+  e) hsh2[:third].keys(0)
+  
+4) 
+  a) arr1[1][1] = 4
+  b) arr[2] = 4
+  c) hsh1[:first][2][0] = 4
+  d) hsh[['a']][:a][2] = 4
+  
+5) 
+male_age_total = 0
+munsters.each do |name, details|
+  if details['gender'] == 'male'
+    male_age_total += details['age']
+  end
+end
+
+6)
+munsters.each do |name, details|
+  puts "#{name} is a #{details['age']}-year-old #{details['gender']}."
+end
+
+7) a is 2 and b is [3, 8]
+
+8) 
+vowels = 'aeiou'
+hsh.each do |_, arr|
+  arr.each do |str|
+    str.each do |chr|
+      print chr if vowels.include?(chr)
+    end
+  end
+end
+
+9)
+arr.map do |sub_array|
+  sub_array.sort do |a, b|
+    b <=> a
+  end
+end
+
+10)
+arr.map do |hsh|
+  hsh.each_with_object({}) do |(key, value), hash|
+    hash[key] = (value + 1)
+  end
+end
+
+alternatively:
+arr.map do |inner_hash|
+  inner_hash.map { |key, value| [key, value + 1] }.to_h
+end
+
+11)
+arr.map do |inner_arr|
+  inner_arr.select {|num| num % 3 == 0 }
+end
+
+12)
+hash = arr.each_with_object({}) do |inner_array, hsh|
+         hsh[inner_array[0]] = inner_array[1]
+       end
+
+13)
+arr.sort_by do |sub_arr|
+  sub_arr.select do |num|
+    num.odd?
+  end
+end
+
+14)
+arr = []
+hsh.each do |produce, details|
+  if details[:type] == 'fruit'
+    arr << details[:colors].map { |color| color.capitalize }
+  end
+  if details[:type] == 'vegetable'
+    arr << details[:size].upcase
+  end
+end
+
+15)
+arr_new = arr.select do |inner_hash|
+            inner_hash.all? do |_, numbers| 
+              numbers.all? do |num| 
+                num.even?
+              end
+            end
+          end
+          
+16)
+HEX_CHARACTERS = ('0'..'9').to_a + ('a'..'f').to_a
+
+def sequence(n)
+  characters = []
+  n.times { |_| characters << HEX_CHARACTERS.sample }
+  characters.join
+end
+
+def uuid
+  [sequence(8), sequence(4), sequence(4), sequence(4), sequence(12)].join('-')
+end

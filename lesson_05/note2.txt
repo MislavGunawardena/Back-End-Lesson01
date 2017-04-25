@@ -1,0 +1,18 @@
+def set_active_competitor(competitor)
+  player_first = ''
+  loop do
+    puts "Do you want to go first? (y/n)"
+    player_first = gets.chomp.downcase
+    if ['y', 'n', 'yes', 'no'].include?(player_first)
+      break
+    else
+      puts "That was not a valid response. Please enter 'y' or 'n'"
+    end
+  end
+  
+  if ['yes', 'y'].include?(player_first)
+    competitor.replace('player')
+  else
+    competitor.replace('computer')
+  end
+end

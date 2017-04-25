@@ -1,0 +1,19 @@
+
+[1mFrom:[0m /home/ubuntu/workspace/LS101/lesson_05/tic_tac_toe2.rb @ line 36 Object#player_chooses_row:
+
+    [1;34m30[0m: [32mdef[0m [1;34mplayer_chooses_row[0m(cell, board)
+    [1;34m31[0m:   row = [31m[1;31m'[0m[31m[1;31m'[0m[31m[0m
+    [1;34m32[0m:   loop [32mdo[0m
+    [1;34m33[0m:     puts [31m[1;31m'[0m[31mPlease enter a row number : [1;31m'[0m[31m[0m
+    [1;34m34[0m:     row = gets.chomp.to_i
+    [1;34m35[0m:     ar = available_rows(board)
+ => [1;34m36[0m:     binding.pry
+    [1;34m37[0m:     [32mif[0m available_rows(board).include?(row)
+    [1;34m38[0m:       [32mbreak[0m
+    [1;34m39[0m:     [32melse[0m
+    [1;34m40[0m:       puts [31m[1;31m"[0m[31mThat's not a valid row number. Please enter #{numbers_in_array(available_rows(board))}[0m[31m[1;31m"[0m[31m[0m
+    [1;34m41[0m:     [32mend[0m
+    [1;34m42[0m:   [32mend[0m
+    [1;34m43[0m:   cell[[1;34m0[0m] = row
+    [1;34m44[0m: [32mend[0m
+

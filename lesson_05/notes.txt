@@ -1,0 +1,13 @@
+=begin
+def decide_on_playing_again(play_again)
+  loop do
+    puts 'Do you want to play again? (y/n)'
+    play_again.replace(gets.chomp.downcase)
+    if ['y', 'n', 'yes', 'no'].include?(play_again)
+      break
+    else
+      puts "That was not a valid response. Please enter 'y' or 'n'"
+    end
+  end
+end
+=end
