@@ -1,0 +1,20 @@
+
+[1mFrom:[0m /home/ubuntu/workspace/LS101/excercises/small_problems_repeat/set1.5/9.rb @ line 8 Object#crunch:
+
+     [1;34m2[0m: [32mdef[0m [1;34mcrunch[0m(str)
+     [1;34m3[0m:   characters = []
+     [1;34m4[0m:   previous_character = [31m[1;31m'[0m[31m[1;31m'[0m[31m[0m
+     [1;34m5[0m: 
+     [1;34m6[0m:   str.chars.each_with_index [32mdo[0m |chr, index|
+     [1;34m7[0m:     p index
+ =>  [1;34m8[0m:     binding.pry
+     [1;34m9[0m:     [32mif[0m chr == characters[[1;34m-1[0m]
+    [1;34m10[0m:       characters[index] = [1;36mnil[0m
+    [1;34m11[0m:     [32melse[0m
+    [1;34m12[0m:       characters[index] = chr
+    [1;34m13[0m:     [32mend[0m
+    [1;34m14[0m:   [32mend[0m
+    [1;34m15[0m:   
+    [1;34m16[0m:   characters.compact.join
+    [1;34m17[0m: [32mend[0m
+

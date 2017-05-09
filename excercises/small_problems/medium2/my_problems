@@ -1,0 +1,6 @@
+
+1) Write a method that will accept one array and one object as arguments.
+The method should remove from the array the first element that equals the object
+argument. The return value should be that same modified object. If a removal
+operation was not performed because there were no elements in the array that
+matched the object argument, then the return value should be nil.

@@ -1,0 +1,17 @@
+for now,..for now.., I should focus on the process of programming rather than
+trying to get as much programs done. I should not worry about the speed.
+I should make sure to:
+
+* Recheck each time I write a line of code.
+* Run code every time I write a line of code.
+* When running code, reason out and decide which o/p I anticipate.
+* If the o/p if not what I expect, find the reason for that. Determine how
+and why that o/p was displayed, and only after that make changes to the program
+if that is  necessary.
+* Routinely use pry to detect errors, I should rely on 'scan and think' only to
+determine where I should put in binding.pry
+* Don't worry too much about variable names initially. name variables for 
+readability only after developing a working solution, and while refactoring the 
+program for general readability.
+* While I'm at all this, I should take the oportunity to develop the habit of 
+using git.
