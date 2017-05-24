@@ -1,0 +1,33 @@
+
+with a string i/p:
+i/p can be converted to an array, or not. THe array can be an array of words
+or an array of characters
+
+i/p can be iterated through, selected, or transformed.
+
+o/p value can be a modification if the i/p, through a reassignment, or else
+I can start from scratch by assigning the variable to be returned to an 
+empty template like literal like '', [], or {}, and then filling it up
+in the required manner.
+
+I don't should use transformations in my algorithms a lot more often. For 
+example, consider e1.3. My algorithm was:
+#   num <- argument
+#   num_string = convert num to a string
+#   digits = []
+#   for each character in num_string: |chr|
+#     digit = convert chr to the corresponding digit
+#     Push digit to the digits array.
+#   return digits
+I could have Instead used the following algorithm:
+#   num <- argument
+#   num_string = convert num to a string
+#   digit_characters = convert num_string to an array containing all it's 
+#                      individual characters
+#   digits = Transform digit_characters into another array by converting all
+#            the individual elements into their corresponding digits.
+#   return digits
+The second algorithm would be a lot shorter to implement in ruby. Next time
+I write algorithms, I should try out both approaches. Maybe I should write a 
+blog post about this!
+

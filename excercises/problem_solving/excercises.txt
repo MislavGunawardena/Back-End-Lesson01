@@ -1,0 +1,16 @@
+
+1) Write a method that accepts a string and a regular expression as input
+arguments and returns an array that contains the starting indices of substrings
+that are returned when the .scan method is called on a string.
+For example:
+  if: string = 'I am 123 going $%^ home 789 tomorrow'
+  then: string.scan(/[^a-zA-Z]+/) == ["123", "$%^", "789"]
+the required method should return the starting indexes of substrings "123", 
+"$%^", and 789.
+
+sub_strings('I am 123 going $%^ home 789 tomorrow', /[^a-zA-Z]+/) ==
+  [6, 16, 25]
+
+
+  
+  

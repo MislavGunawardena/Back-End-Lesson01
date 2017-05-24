@@ -1,0 +1,11 @@
+If a max_by, min_by etc. method is called on an array variable, there can be
+a bug in situations where the variable value is [].
+This is possibly also true for methods such as each, select, and map.
+This happened in problem e5.10b
+
+If a variable value is being constructed during successive iteration through
+a loop, and the variable get modified only during some of those iterations, 
+based on the fulfillment of some condition, then it is very important to
+update that variable during the final iteration through the loop, or right 
+after the loop was exited.
+This form of a bug occured in e5.10b

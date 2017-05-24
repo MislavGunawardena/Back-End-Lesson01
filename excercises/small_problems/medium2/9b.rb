@@ -1,16 +1,13 @@
 def bubble_sort!(arr)
   size = arr.size
-  interchange_made = ''
-  loop do
-    interchange_made = false
-    0.upto(size - 2) do |index|
-      next if arr[index] <= arr[index + 1]
-      arr[index], arr[index + 1] = arr[index + 1], arr[index]
-      interchange_made = true
-    end
-    
-    break unless interchange_made
+  swapped = false
+  0.upto(size - 2) do |index|
+    next if arr[index] <= arr[index + 1]
+    arr[index], arr[index + 1] = arr[index + 1], arr[index]
+    swapped = true
   end
+  
+  bubble_sort!(arr) if swapped
 end
 
 array = [5, 3]

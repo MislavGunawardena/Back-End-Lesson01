@@ -1,0 +1,57 @@
+* e9.1.rb : I had used the inject method to construct the full name, instead of
+simply using join(' ')
+
+* e9.2.rb : There was a 'bug' in the algorithm because I used different names
+to refer to the same thing. That in turn caused a bug in the actual program.
+I had made an attempt to use a variable that was not yet initialized. When
+writing algorithm's I should take care to be consistant in naming things, 
+because I closely follow the algorithm when writing a program. In addition,
+paying closer attention to the lines of code that I am writing woulde have
+helped me avoid this mistake.
+
+* e9.1.rb : I should once and for all figure out what the first half is and
+what the second half is, in terms of indices, and in terms of 'position',
+when an collection has n items and n is odd. When n is even, I should know
+what the exact midpoint is, in terms of index and position.
+
+* As a way of learning to write better algorithms, I should 'reverse' the
+process of writing an algorithm first and then writing the code. I should 
+look at some code and write an algorithm! This will help me learn to write
+algorithms that better make use of ruby's ability to write conscise readable
+code.
+
+* Whenever I change the name of a variable or constant, I should make
+appropriate changes to all other places where those occur.
+
+* When making a comparison, I should make sure that I am comparing values
+of the same type.
+
+* When copying text from the question to paste into statements that print to
+the screen, I should carefully go over each and every word, number, and
+punctuation to make sure that I replace all components that need to be 
+replaced using string interpolation.
+
+* When writing in the name of a variable, constant, function etc. for the 
+second or subsequent time, I should always do so by choosing an option that
+cloud 9, (or some other operating environment), provides. This will minimize 
+the probablity that such an entity will be missnamed when being referred to
+a second or subsequent time.
+
+* When copying a method from one file to another, I should make sure that I 
+also copy all associated constants that are needed to make the method work.
+I should also do this for helper functions.
+
+* To avoid confusion and maintain consistancy, I should always use 'loop: '
+when writing algorithms. I should avoid 'while' and 'until' etc.
+
+* One of the most important things I should focus on is decomposing a problem
+into smaller parts. For example, if the problem is to find the longest
+palindromic substring of a string, then this can be decomposed in the following
+way:
+  1) Find all substrings of the string.
+  2) Out of all the substrings, find those that are palindromic.
+  3) Out of all the palindromic substrings, find which one is largest.
+If I take this approach with every kind of problem, then that will take me a 
+long way!
+
+
